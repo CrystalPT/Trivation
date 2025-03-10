@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Trivia Master</title>
+
+  <!-- Tailwind CSS for styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Define color variables */
+    :root {
+      --dark-bg: #0d1321;
+      --dark-blue: #1d2d44;
+      --medium-blue: #3e5c76;
+      --light-blue: #748cab;
+      --cream: #f0ebd8;
+      --white: #ffffff;
+      --black: #000000;
+      --gray: #c8c8c8;
+      --red: #ff5050;
+      --green: #50c878;
+    }
+
+    /* Apply colors with CSS variables */
+    .bg-dark-bg { background-color: var(--dark-bg); }
+    .bg-dark-blue { background-color: var(--dark-blue); }
+    .bg-medium-blue { background-color: var(--medium-blue); }
+    .bg-light-blue { background-color: var(--light-blue); }
+    .bg-cream { background-color: var(--cream); }
+    .bg-red { background-color: var(--red); }
+    .bg-green { background-color: var(--green); }
+    .bg-gray { background-color: var(--gray); }
+
+    .text-cream { color: var(--cream); }
+    .text-light-blue { color: var(--light-blue); }
+    .text-dark-blue { color: var(--dark-blue); }
+    .text-dark-bg { color: var(--dark-bg); }
+    .text-white { color: var(--white); }
+
+    .border-light-blue { border-color: var(--light-blue); }
+    .border-medium-blue { border-color: var(--medium-blue); }
+    .border-gray { border-color: var(--gray); }
+
+    /* Google sign-in button styles */
+    .google-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      color: #444;
+      border-radius: 5px;
+      border: thin solid #888;
+      box-shadow: 0 2px 4px 0 rgba(0,0,0,.25);
+      padding: 10px 20px;
+      width: 100%;
+      font-weight: 500;
+      transition: background-color .218s, border-color .218s, box-shadow .218s;
+      cursor: pointer;
+    }
+
+    .google-button:hover {
+      box-shadow: 0 0 3px 3px rgba(66,133,244,.3);
+    }
+
+    .google-button-icon {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 12px;
+      width: 18px;
+      height: 18px;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body class="bg-dark-bg">
+  <div class="min-h-screen p-6">
+    <!-- Header -->
+    <header class="mb-8 p-4 rounded-lg bg-dark-blue">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <a href="index.html" class="text-4xl font-bold mb-4 md:mb-0 text-cream no-underline">
+          TRIVIA MASTER
+        </a>
+
+        <!-- Navigation buttons -->
+        <div class="flex flex-wrap gap-3 mb-4 md:mb-0">
+          <a
+            href="https://github.com/CrystalPT/Trivation/releases"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-4 py-2 rounded-lg text-center bg-medium-blue text-cream no-underline"
+          >
+            Downloads
+          </a>
+        </div>
+
+        <!-- User controls -->
+        <div>
+          <div class="flex gap-2">
+            <button
+              id="showLoginBtn"
+              class="px-4 py-2 rounded-lg bg-medium-blue text-cream no-underline">
+              Sign In
+            </button>
+            <button
+              id="showSignupBtn"
+              class="px-4 py-2 rounded-lg bg-green text-white no-underline">
+              Sign Up
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Messages -->
+    <div id="errorMessage" class="mb-4 p-3 rounded-lg bg-red text-white" style="display: none;"></div>
+    <div id="successMessage" class="mb-4 p-3 rounded-lg bg-green text-white" style="display: none;"></div>
+
+    <!-- Login Form -->
+    <div id="loginForm" class="mb-8 p-6 rounded-lg max-w-md mx-auto bg-dark-blue">
+      <h2 class="text-2xl mb-4 text-center text-cream">Log in</h2>
+      <form id="loginFormElement" class="mb-4">
+        <div class="mb-4">
+          <label class="block mb-2 text-light-blue">Username or email</label>
+          <div class="relative">
+            <input
+              type="text"
+              id="email"
+              class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
+              required
+            />
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="block mb-2 text-light-blue">Password</label>
+          <div class="relative">
+            <input
+              type="password"
+              id="password"
+              class="w-full p-2 pr-10 rounded-lg border bg-dark-bg text-cream border-light-blue"
+              required
+            />
+            <button
+              type="button"
+              id="togglePassword"
+              class="absolute inset-y-0 right-0 px-3 flex items-center text-light-blue"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5" id="passwordEyeIcon">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="mb-6">
+          <button
+            type="button"
+            id="showResetPasswordBtn"
+            class="text-sm text-light-blue"
+          >
+            Forgot password? Reset your password
+          </button>
+        </div>
+        <button
+          type="submit"
+          class="w-full p-3 rounded-lg mb-4 bg-gray text-dark-bg"
+        >
+          Log in
+        </button>
+
+        <div class="flex items-center my-4">
+          <div class="flex-grow border-t border-gray"></div>
+          <span class="mx-4 text-cream">or</span>
+          <div class="flex-grow border-t border-gray"></div>
+        </div>
+
+        <button
+          type="button"
+          id="googleSignInBtn"
+          class="google-button mb-4"
+        >
+          <svg class="google-button-icon" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          Continue with Google
+        </button>
+      </form>
+
+      <div class="text-center">
+        <p class="text-cream">
+          Don't have an account?
+          <button
+            id="switchToSignupBtn"
+            class="ml-1 text-light-blue"
+          >
+            Sign up
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="signupForm" class="mb-8 p-6 rounded-lg max-w-md mx-auto bg-dark-blue" style="display: none;">
+      <h2 class="text-2xl mb-4 text-center text-cream">Sign up</h2>
+      <form id="signupFormElement" class="mb-4">
+        <div class="mb-4">
+          <label class="block mb-2 text-light-blue">Email</label>
+          <input
+            type="email"
+            id="signupEmail"
+            class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
+            required
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block mb-2 text-light-blue">Username</label>
+          <input
+            type="text"
+            id="signupUsername"
+            class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
+            required
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block mb-2 text-light-blue">Password</label>
+          <div class="relative">
+            <input
+              type="password"
+              id="signupPassword"
+              class="w-full p-2 pr-10 rounded-lg border bg-dark-bg text-cream border-light-blue"
+              required
+            />
+            <button
+              type="button"
+              id="toggleSignupPassword"
+              class="absolute inset-y-0 right-0 px-3 flex items-center text-light-blue"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5" id="signupPasswordEyeIcon">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label class="block mb-2 text-light-blue">Confirm Password</label>
+          <div class="relative">
+            <input
+              type="password"
+              id="confirmPassword"
+              class="w-full p-2 pr-10 rounded-lg border bg-dark-bg text-cream border-light-blue"
+              required
+            />
+            <button
+              type="button"
+              id="toggleConfirmPassword"
+              class="absolute inset-y-0 right-0 px-3 flex items-center text-light-blue"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5" id="confirmPasswordEyeIcon">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full p-3 rounded-lg mb-4 bg-gray text-dark-bg"
+        >
+          Sign up
+        </button>
+
+        <div class="flex items-center my-4">
+          <div class="flex-grow border-t border-gray"></div>
+          <span class="mx-4 text-cream">or</span>
+          <div class="flex-grow border-t border-gray"></div>
+        </div>
+
+        <button
+          type="button"
+          id="signupGoogleBtn"
+          class="google-button mb-4"
+        >
+          <svg class="google-button-icon" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          Continue with Google
+        </button>
+      </form>
+
+      <div class="text-center">
+        <p class="text-cream">
+          Already have an account?
+          <button
+            id="switchToLoginBtn"
+            class="ml-1 text-light-blue"
+          >
+            Log in
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <!-- Password Reset Form -->
+    <div id="resetPasswordForm" class="mb-8 p-6 rounded-lg max-w-md mx-auto bg-dark-blue" style="display: none;">
+      <h2 class="text-2xl mb-4 text-center text-cream">Reset Password</h2>
+      <div id="resetPasswordStep1">
+        <form id="resetPasswordFormElement">
+          <div class="mb-4">
+            <label class="block mb-2 text-light-blue">
+              Enter your email address
+            </label>
+            <input
+              type="email"
+              id="resetEmail"
+              class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
+              required
+            />
+          </div>
+          <div class="flex gap-3">
+            <button
+              type="submit"
+              class="w-full px-4 py-2 rounded-lg bg-medium-blue text-cream"
+            >
+              Send Reset Link
+            </button>
+            <button
+              type="button"
+              id="cancelResetBtn"
+              class="px-4 py-2 rounded-lg bg-dark-blue text-cream border border-light-blue"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div id="resetPasswordStep2" style="display: none;">
+        <p class="mb-4 text-cream">
+          A password reset link has been sent to <span id="resetEmailDisplay"></span>.
+        </p>
+        <p class="mb-4 text-cream">
+          Check your email and follow the instructions to reset your password.
+        </p>
+        <button
+          id="backToLoginBtn"
+          class="w-full px-4 py-2 rounded-lg bg-medium-blue text-cream"
+        >
+          Return to Login
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Firebase configuration
+    const FIREBASE_API_KEY = "AIzaSyDIgbZvfYb2kxazfrZcrddAVEZ7tVdWvhA";
+    const FIREBASE_DATABASE_URL = "https://trivia-20b98-default-rtdb.europe-west1.firebasedatabase.app";
+    const GOOGLE_CLIENT_ID = "746384834325-bmbc1ldf236m32gnes75i0b8v4rm6ont.apps.googleusercontent.com";
+
+    // Check if already logged in
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check URL for page parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const page = urlParams.get('page');
+
+      if (page === 'signup') {
+        showSignupForm();
+      } else if (page === 'reset-password') {
+        showResetPasswordForm();
+      } else {
+        showLoginForm();
+      }
+
+      const savedUser = localStorage.getItem('triviaUser');
+      const savedToken = localStorage.getItem('triviaToken');
+
+      if (savedUser && savedToken) {
+        // Already logged in, redirect to home
+        window.location.href = 'index.html';
+      }
+
+      // Add login form event listeners
+      document.getElementById('loginFormElement').addEventListener('submit', handleLogin);
+      document.getElementById('googleSignInBtn').addEventListener('click', handleGoogleSignIn);
+      document.getElementById('togglePassword').addEventListener('click', function() {
+        togglePasswordVisibility('password', 'passwordEyeIcon');
+      });
+      document.getElementById('showResetPasswordBtn').addEventListener('click', showResetPasswordForm);
+      document.getElementById('switchToSignupBtn').addEventListener('click', showSignupForm);
+
+      // Add signup form event listeners
+      document.getElementById('signupFormElement').addEventListener('submit', handleSignup);
+      document.getElementById('signupGoogleBtn').addEventListener('click', handleGoogleSignIn);
+      document.getElementById('toggleSignupPassword').addEventListener('click', function() {
+        togglePasswordVisibility('signupPassword', 'signupPasswordEyeIcon');
+      });
+      document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
+        togglePasswordVisibility('confirmPassword', 'confirmPasswordEyeIcon');
+      });
+      document.getElementById('switchToLoginBtn').addEventListener('click', showLoginForm);
+
+      // Add reset password form event listeners
+      document.getElementById('resetPasswordFormElement').addEventListener('submit', handlePasswordReset);
+      document.getElementById('cancelResetBtn').addEventListener('click', showLoginForm);
+      document.getElementById('backToLoginBtn').addEventListener('click', showLoginForm);
+
+      // Add header button listeners
+      document.getElementById('showLoginBtn').addEventListener('click', showLoginForm);
+      document.getElementById('showSignupBtn').addEventListener('click', showSignupForm);
+    });
+
+    // Show login form
+    function showLoginForm() {
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('resetPasswordForm').style.display = 'none';
+
+      document.getElementById('showLoginBtn').classList.remove('bg-medium-blue');
+      document.getElementById('showLoginBtn').classList.add('bg-light-blue');
+      document.getElementById('showSignupBtn').classList.remove('bg-light-blue');
+      document.getElementById('showSignupBtn').classList.add('bg-green');
+
+      // Update URL without reloading
+      history.pushState(null, '', 'login.html');
+    }
+
+    // Show signup form
+    function showSignupForm() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('signupForm').style.display = 'block';
+      document.getElementById('resetPasswordForm').style.display = 'none';
+
+      document.getElementById('showLoginBtn').classList.remove('bg-light-blue');
+      document.getElementById('showLoginBtn').classList.add('bg-medium-blue');
+      document.getElementById('showSignupBtn').classList.remove('bg-green');
+      document.getElementById('showSignupBtn').classList.add('bg-light-blue');
+
+      // Update URL without reloading
+      history.pushState(null, '', 'login.html?page=signup');
+    }
+
+    // Show reset password form
+    function showResetPasswordForm() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('resetPasswordForm').style.display = 'block';
+      document.getElementById('resetPasswordStep1').style.display = 'block';
+      document.getElementById('resetPasswordStep2').style.display = 'none';
+
+      // Update URL without reloading
+      history.pushState(null, '', 'login.html?page=reset-password');
+    }
+
+    // Handle login form submission
+    async function handleLogin(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        showError('Please fill in all fields');
+        return;
+      }
+
+      try {
+        // Try to find user by username if email doesn't contain @
+        let loginEmail = email;
+
+        if (!email.includes('@')) {
+          const response = await fetch(`${FIREBASE_DATABASE_URL}/users.json`);
+          if (response.ok) {
+            const data = await response.json();
+            if (data) {
+              let found = false;
+              Object.entries(data).forEach(([key, user]) => {
+                if (user.username === email) {
+                  loginEmail = user.email;
+                  found = true;
+                }
+              });
+
+              if (!found) {
+                showError('Username not found');
+                return;
+              }
+            }
+          }
+        }
+
+        // Sign in with REST API
+        const authResponse = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_API_KEY}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: loginEmail,
+            password: password,
+            returnSecureToken: true
+          })
+        });
+
+        const authData = await authResponse.json();
+
+        if (authResponse.ok) {
+          // Save auth data
+          const currentUser = {
+            email: authData.email,
+            localId: authData.localId,
+            displayName: authData.displayName
+          };
+
+          // Save to localStorage for persistence
+          localStorage.setItem('triviaUser', JSON.stringify(currentUser));
+          localStorage.setItem('triviaToken', authData.idToken);
+
+          // Show success and redirect
+          showSuccess('Signed in successfully!');
+
+          // Get redirect URL from query params if exists
+          const urlParams = new URLSearchParams(window.location.search);
+          const redirectTo = urlParams.get('redirect') || 'index.html';
+
+          setTimeout(() => {
+            window.location.href = redirectTo;
+          }, 1000);
+        } else {
+          showError(authData.error?.message || 'Login failed');
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        showError('Login failed. Please try again.');
+      }
+    }
+
+    // Handle signup form submission
+    async function handleSignup(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('signupEmail').value;
+      const username = document.getElementById('signupUsername').value;
+      const password = document.getElementById('signupPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      // Validate inputs
+      if (!email || !username || !password || !confirmPassword) {
+        showError('All fields are required');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showError('Passwords do not match');
+        return;
+      }
+
+      if (password.length < 6) {
+        showError('Password must be at least 6 characters');
+        return;
+      }
+
+      if (!email.includes('@')) {
+        showError('Invalid email format');
+        return;
+      }
+
+      try {
+        // Check if username already exists
+        const usersRef = await fetch(`${FIREBASE_DATABASE_URL}/users.json`);
+        const usersData = await usersRef.json();
+
+        if (usersData) {
+          for (const uid in usersData) {
+            if (usersData[uid].username === username) {
+              showError('Username already exists');
+              return;
+            }
+            if (usersData[uid].email === email) {
+              showError('Email already exists');
+              return;
+            }
+          }
+        }
+
+        // Create user with email and password
+        const signUpResponse = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${FIREBASE_API_KEY}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+            returnSecureToken: true
+          })
+        });
+
+        const signUpData = await signUpResponse.json();
+
+        if (signUpResponse.ok) {
+          // Save auth data
+          const newUser = {
+            email: signUpData.email,
+            localId: signUpData.localId,
+            displayName: username
+          };
+
+          localStorage.setItem('triviaUser', JSON.stringify(newUser));
+          localStorage.setItem('triviaToken', signUpData.idToken);
+
+          // Store additional user info
+          await fetch(`${FIREBASE_DATABASE_URL}/users/${signUpData.localId}.json?auth=${signUpData.idToken}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              username: username,
+              email: email,
+              is_developer: false,
+              stats: {
+                games_played: 0,
+                correct_answers: 0,
+                wrong_answers: 0,
+                high_score: 0
+              }
+            })
+          });
+
+          // Show success and redirect
+          showSuccess('Account created successfully!');
+
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1000);
+        } else {
+          showError(signUpData.error?.message || 'Sign up failed');
+        }
+      } catch (error) {
+        console.error("Sign up error:", error);
+        showError('Sign up failed. Please try again.');
+      }
+    }
+
+    // Handle password reset
+    async function handlePasswordReset(e) {
+      e.preventDefault();
+
+      const resetEmail = document.getElementById('resetEmail').value;
+
+      if (!resetEmail) {
+        showError('Email is required');
+        return;
+      }
+
+      try {
+        // Send password reset email via Firebase REST API
+        const resetResponse = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${FIREBASE_API_KEY}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            requestType: 'PASSWORD_RESET',
+            email: resetEmail
+          })
+        });
+
+        const resetData = await resetResponse.json();
+
+        if (resetResponse.ok) {
+          // Show success message
+          document.getElementById('resetEmailDisplay').textContent = resetEmail;
+          document.getElementById('resetPasswordStep1').style.display = 'none';
+          document.getElementById('resetPasswordStep2').style.display = 'block';
+        } else {
+          showError(resetData.error?.message || 'Failed to send reset email');
+        }
+      } catch (error) {
+        console.error("Password reset error:", error);
+        showError('An error occurred. Please try again.');
+      }
+    }
+
+    // Handle Google Sign-In
+    function handleGoogleSignIn() {
+      // Generate a random state string to prevent CSRF attacks
+      const state = Math.random().toString(36).substring(2, 15);
+      localStorage.setItem('googleAuthState', state);
+
+      // Store current page URL to return to after login
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTo = urlParams.get('redirect') || 'index.html';
+      localStorage.setItem('authRedirectTo', redirectTo);
+
+      // Prepare the Google OAuth URL
+      const googleAuthUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
+      googleAuthUrl.searchParams.append("client_id", GOOGLE_CLIENT_ID);
+      googleAuthUrl.searchParams.append("redirect_uri", `${window.location.origin}/oauth-callback.html`);
+      googleAuthUrl.searchParams.append("response_type", "token");
+      googleAuthUrl.searchParams.append("scope", "email profile");
+      googleAuthUrl.searchParams.append("state", state);
+
+      // Redirect to Google auth page
+      window.location.href = googleAuthUrl.toString();
+    }
+
+    // Toggle password visibility
+    function togglePasswordVisibility(inputId, iconId) {
+      const passwordInput = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+        `;
+      } else {
+        passwordInput.type = 'password';
+        icon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        `;
+      }
+    }
+
+    // Show error message
+    function showError(message) {
+      const errorMsg = document.getElementById('errorMessage');
+      errorMsg.textContent = message;
+      errorMsg.style.display = 'block';
+
+      setTimeout(() => {
+        errorMsg.style.display = 'none';
+      }, 5000);
+    }
+
+    // Show success message
+    function showSuccess(message) {
+      const successMsg = document.getElementById('successMessage');
+      successMsg.textContent = message;
+      successMsg.style.display = 'block';
+
+      setTimeout(() => {
+        successMsg.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Settings - Trivia Master</title>
+
+  <!-- Tailwind CSS for styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Define color variables */
+    :root {
+      --dark-bg: #0d1321;
+      --dark-blue: #1d2d44;
+      --medium-blue: #3e5c76;
+      --light-blue: #748cab;
+      --cream: #f0ebd8;
+      --white: #ffffff;
+      --black: #000000;
+      --gray: #c8c8c8;
+      --red: #ff5050;
+      --green: #50c878;
+    }
+
+    /* Apply colors with CSS variables */
+    .bg-dark-bg { background-color: var(--dark-bg); }
+    .bg-dark-blue { background-color: var(--dark-blue); }
+    .bg-medium-blue { background-color: var(--medium-blue); }
+    .bg-light-blue { background-color: var(--light-blue); }
+    .bg-cream { background-color: var(--cream); }
+    .bg-red { background-color: var(--red); }
+    .bg-green { background-color: var(--green); }
+    .bg-gray { background-color: var(--gray); }
+
+    .text-cream { color: var(--cream); }
+    .text-light-blue { color: var(--light-blue); }
+    .text-dark-blue { color: var(--dark-blue); }
+    .text-dark-bg { color: var(--dark-bg); }
+    .text-white { color: var(--white); }
+
+    .border-light-blue { border-color: var(--light-blue); }
+    .border-medium-blue { border-color: var(--medium-blue); }
+  </style>
+</head>
+<body class="bg-dark-bg">
+  <div class="min-h-screen p-6">
+    <!-- Header -->
+    <header class="mb-8 p-4 rounded-lg bg-dark-blue">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <a href="index.html" class="text-4xl font-bold mb-4 md:mb-0 text-cream no-underline">
+          TRIVIA MASTER
+        </a>
+
+        <!-- Navigation buttons -->
+        <div class="flex flex-wrap gap-3 mb-4 md:mb-0">
+          <a
+            href="https://github.com/CrystalPT/Trivation/releases"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-4 py-2 rounded-lg text-center bg-medium-blue text-cream no-underline"
+          >
+            Downloads
+          </a>
+
+          <div id="loggedInNav">
+            <a href="create-trivia.html" class="px-4 py-2 rounded-lg bg-medium-blue text-cream no-underline">
+              Create Trivia
+            </a>
+            <a href="my-trivias.html" class="px-4 py-2 rounded-lg bg-medium-blue text-cream no-underline">
+              My Trivias
+            </a>
+          </div>
+        </div>
+
+        <!-- User controls -->
+        <div>
+          <div id="loggedIn" class="flex items-center gap-4 flex-wrap justify-center">
+            <p id="userDisplayName" class="text-lg text-cream"></p>
+            <a href="account.html" class="px-4 py-2 rounded-lg bg-medium-blue text-cream no-underline">
+              Account Settings
+            </a>
+            <button
+              id="signOutBtn"
+              class="px-4 py-2 rounded-lg bg-medium-blue text-cream"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Messages -->
+    <div id="errorMessage" class="mb-4 p-3 rounded-lg bg-red text-white" style="display: none;"></div>
+    <div id="successMessage" class="mb-4 p-3 rounded-lg bg-green text-white" style="display: none;"></div>
+
+    <!-- Account Settings -->
+    <div class="mb-8 p-6 rounded-lg max-w-xl mx-auto bg-dark-blue">
+      <h2 class="text-2xl mb-4 text-cream">Account Settings</h2>
+
+      <!-- Update Username -->
+      <div class="mb-6">
+        <h3 class="text-xl mb-2 text-light-blue">Update Username</h3>
+        <form id="usernameForm" class="flex gap-4 items-end">
+          <div class="flex-grow">
+            <label class="block mb-2 text-light-blue">New Username</label>
+            <input
+              type="text"
+              id="username"
+              class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            class="px-4 py-2 rounded-lg bg-medium-blue text-cream"
+          >
+            Update
+          </button>
+        </form>
+      </div>
+
+      <!-- Update Password -->
+      <div>
+        <h3 class="text-xl mb-2 text-light-blue">Update Password</h3>
+        <form id="passwordForm">
+          <div class="mb-4">
+            <label class="block mb-2 text-light-blue">Current Password</label>
+            <input
+              type="password"
+              id="currentPassword"
+              class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block mb-2 text-light-blue">New Password</label>
+            <input
+              type="password"
+              id="newPassword"
+              class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            class="px-4 py-2 rounded-lg bg-medium-blue text-cream"
+          >
+            Update Password
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Firebase configuration
+    const FIREBASE_API_KEY = "AIzaSyDIgbZvfYb2kxazfrZcrddAVEZ7tVdWvhA";
+    const FIREBASE_DATABASE_URL = "https://trivia-20b98-default-rtdb.europe-west1.firebasedatabase.app";
+
+    // Auth state
+    let user = null;
+    let userData = null;
+    let authToken = null;
+
+    // Check if user is logged in on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuthState();
+
+      // Add event listeners
+      document.getElementById('usernameForm').addEventListener('submit', handleUsernameUpdate);
+      document.getElementById('passwordForm').addEventListener('submit', handlePasswordUpdate);
+      document.getElementById('signOutBtn').addEventListener('click', handleSignOut);
+    });
+
+    // Check authentication state
+    function checkAuthState() {
+      const savedUser = localStorage.getItem('triviaUser');
+      const savedToken = localStorage.getItem('triviaToken');
+
+      if (savedUser && savedToken) {
+        user = JSON.parse(savedUser);
+        authToken = savedToken;
+
+        // Set user name
+        document.getElementById('userDisplayName').textContent = user.displayName || user.email;
+
+        // Load user data
+        fetchUserData(user.localId, savedToken);
+      } else {
+        // Redirect to login if not logged in
+        window.location.href = 'login.html?redirect=account.html';
+      }
+    }
+
+    // Fetch user data from Firebase
+    async function fetchUserData(userId, token) {
+      try {
+        const response = await fetch(`${FIREBASE_DATABASE_URL}/users/${userId}.json?auth=${token}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data) {
+            userData = data;
+
+            // If username is available, update display name and form
+            if (data.username) {
+              document.getElementById('userDisplayName').textContent = data.username;
+              document.getElementById('username').value = data.username;
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+
+    // Handle username update
+    async function handleUsernameUpdate(e) {
+      e.preventDefault();
+
+      const newUsername = document.getElementById('username').value;
+
+      if (!newUsername) {
+        showError('Username cannot be empty');
+        return;
+      }
+
+      if (!user || !authToken) {
+        showError('You need to be logged in');
+        return;
+      }
+
+      try {
+        // Check if username already exists
+        const usersResponse = await fetch(`${FIREBASE_DATABASE_URL}/users.json`);
+        if (usersResponse.ok) {
+          const usersData = await usersResponse.json();
+
+          let usernameExists = false;
+          Object.entries(usersData).forEach(([key, userData]) => {
+            if (key !== user.localId && userData.username === newUsername) {
+              usernameExists = true;
+            }
+          });
+
+          if (usernameExists) {
+            showError('Username already exists');
+            return;
+          }
+
+          // Update username using PATCH request
+          const updateResponse = await fetch(`${FIREBASE_DATABASE_URL}/users/${user.localId}.json?auth=${authToken}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: newUsername })
+          });
+
+          if (updateResponse.ok) {
+            showSuccess('Username updated successfully!');
+
+            // Update display name
+            document.getElementById('userDisplayName').textContent = newUsername;
+
+            // Update user data
+            if (userData) {
+              userData.username = newUsername;
+            }
+          } else {
+            showError('Failed to update username');
+          }
+        }
+      } catch (error) {
+        console.error("Username update error:", error);
+        showError('Failed to update username');
+      }
+    }
+
+    // Handle password update
+    async function handlePasswordUpdate(e) {
+      e.preventDefault();
+
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+
+      if (!currentPassword || !newPassword) {
+        showError('All fields are required');
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        showError('New password must be at least 6 characters');
+        return;
+      }
+
+      if (!user || !authToken) {
+        showError('You need to be logged in');
+        return;
+      }
+
+      try {
+        // Verify current password by re-authenticating
+        const verifyResponse = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_API_KEY}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: user.email,
+            password: currentPassword,
+            returnSecureToken: true
+          })
+        });
+
+        if (!verifyResponse.ok) {
+          showError('Current password is incorrect');
+          return;
+        }
+
+        // Change password
+        const passwordResponse = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${FIREBASE_API_KEY}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            idToken: authToken,
+            password: newPassword,
+            returnSecureToken: true
+          })
+        });
+
+        const passwordData = await passwordResponse.json();
+
+        if (passwordResponse.ok) {
+          // Update token if returned
+          if (passwordData.idToken) {
+            authToken = passwordData.idToken;
+            localStorage.setItem('triviaToken', passwordData.idToken);
+          }
+
+          // Clear form
+          document.getElementById('currentPassword').value = '';
+          document.getElementById('newPassword').value = '';
+
+          showSuccess('Password updated successfully!');
+        } else {
+          showError(passwordData.error?.message || 'Failed to update password');
+        }
+      } catch (error) {
+        console.error("Password update error:", error);
+        showError('Failed to update password');
+      }
+    }
+
+    // Handle sign out
+    function handleSignOut() {
+      // Clear authentication data
+      localStorage.removeItem('triviaUser');
+      localStorage.removeItem('triviaToken');
+
+      // Redirect to home
+      window.location.href = 'index.html';
+    }
+
+    // Show error message
+    function showError(message) {
+      const errorMsg = document.getElementById('errorMessage');
+      errorMsg.textContent = message;
+      errorMsg.style.display = 'block';
+
+      setTimeout(() => {
+        errorMsg.style.display = 'none';
+      }, 5000);
+    }
+
+    // Show success message
+    function showSuccess(message) {
+      const successMsg = document.getElementById('successMessage');
+      successMsg.textContent = message;
+      successMsg.style.display = 'block';
+
+      setTimeout(() => {
+        successMsg.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
