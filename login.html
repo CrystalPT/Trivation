@@ -49,6 +49,32 @@
     .border-medium-blue { border-color: var(--medium-blue); }
     .border-gray { border-color: var(--gray); }
 
+    /* Navigation buttons */
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 1rem;
+      height: 40px;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background-color 0.2s, transform 0.1s;
+      white-space: nowrap;
+      border: none;
+      cursor: pointer;
+    }
+
+    .nav-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .nav-button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
     /* Google sign-in button styles */
     .google-button {
       display: flex;
@@ -70,6 +96,11 @@
       box-shadow: 0 0 3px 3px rgba(66,133,244,.3);
     }
 
+    .google-button:active {
+      background-color: #f5f5f5;
+      transform: scale(0.98);
+    }
+
     .google-button-icon {
       display: inline-block;
       vertical-align: middle;
@@ -77,6 +108,32 @@
       width: 18px;
       height: 18px;
       box-sizing: border-box;
+    }
+
+    /* Form controls animations */
+    .form-input {
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--light-blue);
+      box-shadow: 0 0 0 2px rgba(116, 140, 171, 0.3);
+    }
+
+    /* Form buttons animations */
+    .form-button {
+      transition: transform 0.1s, box-shadow 0.2s;
+    }
+
+    .form-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .form-button:active {
+      transform: translateY(1px);
+      box-shadow: none;
     }
   </style>
 </head>
@@ -90,12 +147,12 @@
         </a>
 
         <!-- Navigation buttons -->
-        <div class="flex flex-wrap gap-3 mb-4 md:mb-0">
+        <div class="flex items-center gap-3 mb-4 md:mb-0">
           <a
             href="https://github.com/CrystalPT/Trivation/releases"
             target="_blank"
             rel="noopener noreferrer"
-            class="px-4 py-2 rounded-lg text-center bg-medium-blue text-cream no-underline"
+            class="nav-button bg-medium-blue text-cream no-underline"
           >
             Downloads
           </a>
@@ -103,15 +160,15 @@
 
         <!-- User controls -->
         <div>
-          <div class="flex gap-2">
+          <div class="flex items-center gap-3">
             <button
               id="showLoginBtn"
-              class="px-4 py-2 rounded-lg bg-medium-blue text-cream no-underline">
+              class="nav-button bg-medium-blue text-cream no-underline">
               Sign In
             </button>
             <button
               id="showSignupBtn"
-              class="px-4 py-2 rounded-lg bg-green text-white no-underline">
+              class="nav-button bg-green text-white no-underline">
               Sign Up
             </button>
           </div>
@@ -133,7 +190,7 @@
             <input
               type="text"
               id="email"
-              class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
+              class="form-input w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
               required
             />
           </div>
@@ -144,7 +201,7 @@
             <input
               type="password"
               id="password"
-              class="w-full p-2 pr-10 rounded-lg border bg-dark-bg text-cream border-light-blue"
+              class="form-input w-full p-2 pr-10 rounded-lg border bg-dark-bg text-cream border-light-blue"
               required
             />
             <button
@@ -163,14 +220,14 @@
           <button
             type="button"
             id="showResetPasswordBtn"
-            class="text-sm text-light-blue"
+            class="text-sm text-light-blue hover:underline"
           >
             Forgot password? Reset your password
           </button>
         </div>
         <button
           type="submit"
-          class="w-full p-3 rounded-lg mb-4 bg-gray text-dark-bg"
+          class="form-button w-full p-3 rounded-lg mb-4 bg-gray text-dark-bg"
         >
           Log in
         </button>
@@ -201,7 +258,7 @@
           Don't have an account?
           <button
             id="switchToSignupBtn"
-            class="ml-1 text-light-blue"
+            class="ml-1 text-light-blue hover:underline"
           >
             Sign up
           </button>
@@ -218,7 +275,7 @@
           <input
             type="email"
             id="signupEmail"
-            class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
+            class="form-input w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
             required
           />
         </div>
@@ -228,7 +285,7 @@
           <input
             type="text"
             id="signupUsername"
-            class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
+            class="form-input w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
             required
           />
         </div>
@@ -239,7 +296,7 @@
             <input
               type="password"
               id="signupPassword"
-              class="w-full p-2 pr-10 rounded-lg border bg-dark-bg text-cream border-light-blue"
+              class="form-input w-full p-2 pr-10 rounded-lg border bg-dark-bg text-cream border-light-blue"
               required
             />
             <button
@@ -255,13 +312,13 @@
           </div>
         </div>
 
-        <div class="mb-6">
+        <div class="mb-4">
           <label class="block mb-2 text-light-blue">Confirm Password</label>
           <div class="relative">
             <input
               type="password"
               id="confirmPassword"
-              class="w-full p-2 pr-10 rounded-lg border bg-dark-bg text-cream border-light-blue"
+              class="form-input w-full p-2 pr-10 rounded-lg border bg-dark-bg text-cream border-light-blue"
               required
             />
             <button
@@ -277,9 +334,24 @@
           </div>
         </div>
 
+        <div class="mb-4">
+          <label class="block mb-2 text-light-blue">Profile Picture (Optional)</label>
+          <div class="flex items-center gap-3">
+            <div id="signupProfilePreview" class="w-16 h-16 rounded-full overflow-hidden border-2 border-light-blue flex items-center justify-center bg-medium-blue">
+              <span id="signupDefaultIcon" class="text-cream text-2xl font-semibold"></span>
+              <img id="signupProfileImg" class="w-full h-full object-cover" style="display: none;" />
+            </div>
+            <label class="nav-button bg-medium-blue text-cream cursor-pointer">
+              Choose Image
+              <input type="file" id="signupProfilePhotoInput" accept="image/jpeg, image/png" class="hidden" />
+            </label>
+          </div>
+          <p class="text-xs text-light-blue mt-1">JPEG or PNG, max 2MB</p>
+        </div>
+
         <button
           type="submit"
-          class="w-full p-3 rounded-lg mb-4 bg-gray text-dark-bg"
+          class="form-button w-full p-3 rounded-lg mb-4 bg-gray text-dark-bg"
         >
           Sign up
         </button>
@@ -310,7 +382,7 @@
           Already have an account?
           <button
             id="switchToLoginBtn"
-            class="ml-1 text-light-blue"
+            class="ml-1 text-light-blue hover:underline"
           >
             Log in
           </button>
@@ -330,21 +402,21 @@
             <input
               type="email"
               id="resetEmail"
-              class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
+              class="form-input w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
               required
             />
           </div>
           <div class="flex gap-3">
             <button
               type="submit"
-              class="w-full px-4 py-2 rounded-lg bg-medium-blue text-cream"
+              class="form-button w-full px-4 py-2 rounded-lg bg-medium-blue text-cream"
             >
               Send Reset Link
             </button>
             <button
               type="button"
               id="cancelResetBtn"
-              class="px-4 py-2 rounded-lg bg-dark-blue text-cream border border-light-blue"
+              class="form-button px-4 py-2 rounded-lg bg-dark-blue text-cream border border-light-blue"
             >
               Cancel
             </button>
@@ -361,7 +433,7 @@
         </p>
         <button
           id="backToLoginBtn"
-          class="w-full px-4 py-2 rounded-lg bg-medium-blue text-cream"
+          class="form-button w-full px-4 py-2 rounded-lg bg-medium-blue text-cream"
         >
           Return to Login
         </button>
@@ -425,7 +497,61 @@
       // Add header button listeners
       document.getElementById('showLoginBtn').addEventListener('click', showLoginForm);
       document.getElementById('showSignupBtn').addEventListener('click', showSignupForm);
+
+      // Add profile photo input listener
+      document.getElementById('signupProfilePhotoInput').addEventListener('change', handleProfilePhotoSelection);
+
+      // Update signup default icon
+      updateSignupDefaultIcon();
     });
+
+    // Handle profile photo selection for signup
+    function handleProfilePhotoSelection(e) {
+      if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+
+        // Check file type
+        if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+          showError('Please select a JPEG or PNG image.');
+          return;
+        }
+
+        // Check file size (limit to 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+          showError('Image size must be less than 2MB.');
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          // Show the image preview
+          const imgPreview = document.getElementById('signupProfileImg');
+          imgPreview.src = e.target.result;
+          imgPreview.style.display = 'block';
+          document.getElementById('signupDefaultIcon').style.display = 'none';
+
+          // Store the image data to be saved during signup
+          window.signupProfilePhotoData = e.target.result;
+        };
+
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Update signup default icon based on username
+    function updateSignupDefaultIcon() {
+      const usernameInput = document.getElementById('signupUsername');
+      const defaultIcon = document.getElementById('signupDefaultIcon');
+
+      // Initial update
+      defaultIcon.textContent = usernameInput.value.charAt(0).toUpperCase() || 'U';
+
+      // Update on input change
+      usernameInput.addEventListener('input', () => {
+        defaultIcon.textContent = usernameInput.value.charAt(0).toUpperCase() || 'U';
+      });
+    }
 
     // Show login form
     function showLoginForm() {
@@ -625,6 +751,11 @@
 
           localStorage.setItem('triviaUser', JSON.stringify(newUser));
           localStorage.setItem('triviaToken', signUpData.idToken);
+
+          // Save profile photo if one was selected
+          if (window.signupProfilePhotoData) {
+            localStorage.setItem('profilePhotoData', window.signupProfilePhotoData);
+          }
 
           // Store additional user info
           await fetch(`${FIREBASE_DATABASE_URL}/users/${signUpData.localId}.json?auth=${signUpData.idToken}`, {
