@@ -44,9 +44,102 @@
     .text-dark-blue { color: var(--dark-blue); }
     .text-dark-bg { color: var(--dark-bg); }
     .text-white { color: var(--white); }
+    .text-red { color: var(--red); }
 
     .border-light-blue { border-color: var(--light-blue); }
     .border-medium-blue { border-color: var(--medium-blue); }
+
+    /* Navigation buttons */
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 1rem;
+      height: 40px;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background-color 0.2s, transform 0.1s;
+      white-space: nowrap;
+      border: none;
+      cursor: pointer;
+    }
+
+    .nav-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .nav-button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    /* Form controls animations */
+    .form-input {
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--light-blue);
+      box-shadow: 0 0 0 2px rgba(116, 140, 171, 0.3);
+    }
+
+    /* Profile picture container */
+    .profile-picture-container {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 2rem;
+      border-radius: 50%;
+      border: 4px solid var(--light-blue);
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+
+    .profile-picture-container:hover {
+      transform: scale(1.05);
+    }
+
+    /* Upload overlay */
+    .upload-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(29, 45, 68, 0.8);
+      padding: 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      transform: translateY(100%);
+      transition: transform 0.3s;
+    }
+
+    .profile-picture-container:hover .upload-overlay {
+      transform: translateY(0);
+    }
+
+    /* Settings section */
+    .settings-section {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--medium-blue);
+    }
+
+    .settings-section:last-child {
+      border-bottom: none;
+    }
+
+    /* Animation for dropdowns and sections */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animated {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
   </style>
 </head>
 <body class="bg-dark-bg">
@@ -59,39 +152,69 @@
         </a>
 
         <!-- Navigation buttons -->
-        <div class="flex flex-wrap gap-3 mb-4 md:mb-0">
+        <div class="flex items-center gap-3 mb-4 md:mb-0">
           <a
             href="https://github.com/CrystalPT/Trivation/releases"
             target="_blank"
             rel="noopener noreferrer"
-            class="px-4 py-2 rounded-lg text-center bg-medium-blue text-cream no-underline"
+            class="nav-button bg-medium-blue text-cream no-underline"
           >
             Downloads
           </a>
 
-          <div id="loggedInNav">
-            <a href="create-trivia.html" class="px-4 py-2 rounded-lg bg-medium-blue text-cream no-underline">
+          <div id="loggedInNav" class="flex items-center gap-3">
+            <button
+              id="navCreateTrivia"
+              class="nav-button bg-medium-blue text-cream">
               Create Trivia
-            </a>
-            <a href="my-trivias.html" class="px-4 py-2 rounded-lg bg-medium-blue text-cream no-underline">
+            </button>
+            <button
+              id="navMyTrivias"
+              class="nav-button bg-medium-blue text-cream">
               My Trivias
-            </a>
+            </button>
           </div>
         </div>
 
         <!-- User controls -->
         <div>
-          <div id="loggedIn" class="flex items-center gap-4 flex-wrap justify-center">
-            <p id="userDisplayName" class="text-lg text-cream"></p>
-            <a href="account.html" class="px-4 py-2 rounded-lg bg-medium-blue text-cream no-underline">
-              Account Settings
-            </a>
-            <button
-              id="signOutBtn"
-              class="px-4 py-2 rounded-lg bg-medium-blue text-cream"
-            >
-              Sign Out
+          <!-- Account Dropdown -->
+          <div id="userAccountDropdown" class="relative">
+            <button id="accountDropdownButton" class="flex items-center gap-2 rounded-full focus:outline-none">
+              <div id="profilePhotoContainer" class="w-10 h-10 rounded-full overflow-hidden border-2 border-light-blue flex items-center justify-center bg-medium-blue">
+                <!-- Default profile icon if no image is set -->
+                <span id="defaultProfileIcon" class="text-cream text-lg font-semibold"></span>
+                <!-- Profile image will be loaded here if available -->
+                <img id="profilePhoto" src="" alt="Profile" class="w-full h-full object-cover" style="display: none;">
+              </div>
             </button>
+
+            <!-- Dropdown menu -->
+            <div id="accountDropdownMenu" class="absolute right-0 mt-2 w-48 bg-dark-blue border border-light-blue rounded-lg shadow-lg z-50" style="display: none;">
+              <div class="p-3 border-b border-medium-blue">
+                <p id="dropdownUsername" class="font-semibold text-cream truncate"></p>
+                <p id="dropdownEmail" class="text-sm text-light-blue truncate"></p>
+              </div>
+              <ul class="py-1">
+                <li>
+                  <a href="account.html" class="flex items-center gap-3 px-4 py-2 text-cream hover:bg-medium-blue">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Profile settings
+                  </a>
+                </li>
+                <li>
+                  <button id="dropdownSignOutBtn" class="flex items-center gap-3 px-4 py-2 text-red hover:bg-medium-blue w-full text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Sign out
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -102,11 +225,32 @@
     <div id="successMessage" class="mb-4 p-3 rounded-lg bg-green text-white" style="display: none;"></div>
 
     <!-- Account Settings -->
-    <div class="mb-8 p-6 rounded-lg max-w-xl mx-auto bg-dark-blue">
-      <h2 class="text-2xl mb-4 text-cream">Account Settings</h2>
+    <div class="mb-8 p-6 rounded-lg max-w-xl mx-auto bg-dark-blue animated">
+      <h2 class="text-2xl mb-4 text-center text-cream">Account Settings</h2>
+
+      <!-- Profile Picture Section -->
+      <div class="settings-section text-center">
+        <div class="profile-picture-container">
+          <div id="largeProfilePhotoContainer" class="w-full h-full flex items-center justify-center bg-medium-blue">
+            <span id="largeDefaultProfileIcon" class="text-cream text-5xl font-semibold"></span>
+            <img id="largeProfilePhoto" src="" alt="Profile" class="w-full h-full object-cover" style="display: none;">
+          </div>
+          <div class="upload-overlay">
+            <label for="profilePhotoUpload" class="text-cream cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Change Photo
+            </label>
+          </div>
+        </div>
+        <input type="file" id="profilePhotoUpload" accept="image/jpeg, image/png" class="hidden">
+        <p id="usernameDisplay" class="text-xl font-semibold text-cream"></p>
+        <p id="emailDisplay" class="text-light-blue"></p>
+      </div>
 
       <!-- Update Username -->
-      <div class="mb-6">
+      <div class="settings-section">
         <h3 class="text-xl mb-2 text-light-blue">Update Username</h3>
         <form id="usernameForm" class="flex gap-4 items-end">
           <div class="flex-grow">
@@ -114,13 +258,13 @@
             <input
               type="text"
               id="username"
-              class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
+              class="form-input w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
               required
             />
           </div>
           <button
             type="submit"
-            class="px-4 py-2 rounded-lg bg-medium-blue text-cream"
+            class="nav-button bg-medium-blue text-cream"
           >
             Update
           </button>
@@ -128,34 +272,74 @@
       </div>
 
       <!-- Update Password -->
-      <div>
+      <div class="settings-section">
         <h3 class="text-xl mb-2 text-light-blue">Update Password</h3>
         <form id="passwordForm">
           <div class="mb-4">
             <label class="block mb-2 text-light-blue">Current Password</label>
-            <input
-              type="password"
-              id="currentPassword"
-              class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
-              required
-            />
+            <div class="relative">
+              <input
+                type="password"
+                id="currentPassword"
+                class="form-input w-full p-2 pr-10 rounded-lg border bg-dark-bg text-cream border-light-blue"
+                required
+              />
+              <button
+                type="button"
+                id="toggleCurrentPassword"
+                class="absolute inset-y-0 right-0 px-3 flex items-center text-light-blue"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5" id="currentPasswordEyeIcon">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </button>
+            </div>
           </div>
           <div class="mb-4">
             <label class="block mb-2 text-light-blue">New Password</label>
-            <input
-              type="password"
-              id="newPassword"
-              class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue"
-              required
-            />
+            <div class="relative">
+              <input
+                type="password"
+                id="newPassword"
+                class="form-input w-full p-2 pr-10 rounded-lg border bg-dark-bg text-cream border-light-blue"
+                required
+              />
+              <button
+                type="button"
+                id="toggleNewPassword"
+                class="absolute inset-y-0 right-0 px-3 flex items-center text-light-blue"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5" id="newPasswordEyeIcon">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </button>
+            </div>
           </div>
           <button
             type="submit"
-            class="px-4 py-2 rounded-lg bg-medium-blue text-cream"
+            class="nav-button bg-medium-blue text-cream"
           >
             Update Password
           </button>
         </form>
+      </div>
+
+      <!-- Account Actions -->
+      <div class="text-center">
+        <button
+          id="returnHomeBtn"
+          class="nav-button bg-medium-blue text-cream mx-2"
+        >
+          Return to Home
+        </button>
+        <button
+          id="signOutBtn"
+          class="nav-button bg-red text-white mx-2"
+        >
+          Sign Out
+        </button>
       </div>
     </div>
   </div>
@@ -172,12 +356,31 @@
 
     // Check if user is logged in on page load
     document.addEventListener('DOMContentLoaded', () => {
+      // Check authentication state
       checkAuthState();
 
       // Add event listeners
       document.getElementById('usernameForm').addEventListener('submit', handleUsernameUpdate);
       document.getElementById('passwordForm').addEventListener('submit', handlePasswordUpdate);
       document.getElementById('signOutBtn').addEventListener('click', handleSignOut);
+      document.getElementById('dropdownSignOutBtn').addEventListener('click', handleSignOut);
+      document.getElementById('returnHomeBtn').addEventListener('click', () => window.location.href = 'index.html');
+      document.getElementById('navCreateTrivia').addEventListener('click', () => window.location.href = 'index.html?page=create-trivia');
+      document.getElementById('navMyTrivias').addEventListener('click', () => window.location.href = 'index.html?page=my-trivias');
+
+      // Profile photo upload
+      document.getElementById('profilePhotoUpload').addEventListener('change', handleProfilePhotoUpload);
+
+      // Account dropdown
+      setupAccountDropdown();
+
+      // Password toggle buttons
+      document.getElementById('toggleCurrentPassword').addEventListener('click', function() {
+        togglePasswordVisibility('currentPassword', 'currentPasswordEyeIcon');
+      });
+      document.getElementById('toggleNewPassword').addEventListener('click', function() {
+        togglePasswordVisibility('newPassword', 'newPasswordEyeIcon');
+      });
     });
 
     // Check authentication state
@@ -189,14 +392,101 @@
         user = JSON.parse(savedUser);
         authToken = savedToken;
 
-        // Set user name
-        document.getElementById('userDisplayName').textContent = user.displayName || user.email;
+        // Update user info displays
+        updateUserInfo();
 
         // Load user data
         fetchUserData(user.localId, savedToken);
       } else {
         // Redirect to login if not logged in
         window.location.href = 'login.html?redirect=account.html';
+      }
+    }
+
+    // Setup Account Dropdown
+    function setupAccountDropdown() {
+      // Elements
+      const accountDropdownButton = document.getElementById('accountDropdownButton');
+      const accountDropdownMenu = document.getElementById('accountDropdownMenu');
+
+      // Toggle dropdown when clicking the button
+      accountDropdownButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (accountDropdownMenu.style.display === 'none') {
+          accountDropdownMenu.style.display = 'block';
+          // Add animation class
+          accountDropdownMenu.classList.add('animated');
+        } else {
+          accountDropdownMenu.style.display = 'none';
+        }
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (accountDropdownMenu.style.display !== 'none' &&
+            !accountDropdownButton.contains(e.target) &&
+            !accountDropdownMenu.contains(e.target)) {
+          accountDropdownMenu.style.display = 'none';
+        }
+      });
+    }
+
+    // Update user information displays
+    function updateUserInfo() {
+      if (!user) return;
+
+      // Small profile photo in header
+      const defaultProfileIcon = document.getElementById('defaultProfileIcon');
+      const profilePhoto = document.getElementById('profilePhoto');
+
+      // Large profile photo on account page
+      const largeDefaultProfileIcon = document.getElementById('largeDefaultProfileIcon');
+      const largeProfilePhoto = document.getElementById('largeProfilePhoto');
+
+      // Username and email displays
+      const usernameDisplay = document.getElementById('usernameDisplay');
+      const emailDisplay = document.getElementById('emailDisplay');
+      const dropdownUsername = document.getElementById('dropdownUsername');
+      const dropdownEmail = document.getElementById('dropdownEmail');
+      const usernameInput = document.getElementById('username');
+
+      // Set username and email
+      usernameDisplay.textContent = user.displayName || 'User';
+      emailDisplay.textContent = user.email || '';
+      dropdownUsername.textContent = user.displayName || 'User';
+      dropdownEmail.textContent = user.email || '';
+
+      // Set username in the form
+      usernameInput.value = user.displayName || '';
+
+      // Set initials for default icons
+      const initial = user.displayName
+        ? user.displayName.charAt(0).toUpperCase()
+        : user.email
+          ? user.email.charAt(0).toUpperCase()
+          : 'U';
+
+      defaultProfileIcon.textContent = initial;
+      largeDefaultProfileIcon.textContent = initial;
+
+      // Check if user has a profile photo
+      const savedPhoto = localStorage.getItem('profilePhotoData');
+      if (savedPhoto) {
+        // Small profile photo
+        profilePhoto.src = savedPhoto;
+        profilePhoto.style.display = 'block';
+        defaultProfileIcon.style.display = 'none';
+
+        // Large profile photo
+        largeProfilePhoto.src = savedPhoto;
+        largeProfilePhoto.style.display = 'block';
+        largeDefaultProfileIcon.style.display = 'none';
+      } else {
+        // No photo, show default icons
+        profilePhoto.style.display = 'none';
+        defaultProfileIcon.style.display = 'block';
+        largeProfilePhoto.style.display = 'none';
+        largeDefaultProfileIcon.style.display = 'block';
       }
     }
 
@@ -209,15 +499,65 @@
           if (data) {
             userData = data;
 
-            // If username is available, update display name and form
+            // If username is available, update display name
             if (data.username) {
-              document.getElementById('userDisplayName').textContent = data.username;
-              document.getElementById('username').value = data.username;
+              user.displayName = data.username;
+              localStorage.setItem('triviaUser', JSON.stringify(user));
+              updateUserInfo();
             }
           }
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
+      }
+    }
+
+    // Handle profile photo upload
+    function handleProfilePhotoUpload(e) {
+      if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+
+        // Check file type
+        if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+          showError('Please select a JPEG or PNG image.');
+          return;
+        }
+
+        // Check file size (limit to 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+          showError('Image size must be less than 2MB.');
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          const photoData = e.target.result;
+
+          // Update small photo in header
+          const profilePhoto = document.getElementById('profilePhoto');
+          const defaultProfileIcon = document.getElementById('defaultProfileIcon');
+          profilePhoto.src = photoData;
+          profilePhoto.style.display = 'block';
+          defaultProfileIcon.style.display = 'none';
+
+          // Update large photo in account page
+          const largeProfilePhoto = document.getElementById('largeProfilePhoto');
+          const largeDefaultProfileIcon = document.getElementById('largeDefaultProfileIcon');
+          largeProfilePhoto.src = photoData;
+          largeProfilePhoto.style.display = 'block';
+          largeDefaultProfileIcon.style.display = 'none';
+
+          // Save to localStorage
+          localStorage.setItem('profilePhotoData', photoData);
+
+          // Option: Upload to server/Firebase if needed
+          //uploadProfilePhoto(file);
+
+          showSuccess('Profile photo updated successfully!');
+        };
+
+        reader.readAsDataURL(file);
       }
     }
 
@@ -267,13 +607,16 @@
           if (updateResponse.ok) {
             showSuccess('Username updated successfully!');
 
-            // Update display name
-            document.getElementById('userDisplayName').textContent = newUsername;
+            // Update local user data
+            user.displayName = newUsername;
+            localStorage.setItem('triviaUser', JSON.stringify(user));
 
-            // Update user data
             if (userData) {
               userData.username = newUsername;
             }
+
+            // Update displays
+            updateUserInfo();
           } else {
             showError('Failed to update username');
           }
@@ -366,9 +709,30 @@
       // Clear authentication data
       localStorage.removeItem('triviaUser');
       localStorage.removeItem('triviaToken');
+      // Don't remove profile photo - it can be kept for next login
+      //localStorage.removeItem('profilePhotoData');
 
       // Redirect to home
       window.location.href = 'index.html';
+    }
+
+    // Toggle password visibility
+    function togglePasswordVisibility(inputId, iconId) {
+      const passwordInput = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+        `;
+      } else {
+        passwordInput.type = 'password';
+        icon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        `;
+      }
     }
 
     // Show error message
