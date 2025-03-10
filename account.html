@@ -140,6 +140,55 @@
     .animated {
       animation: fadeIn 0.3s ease-out forwards;
     }
+
+    /* New navigation style with underline effect */
+    .nav-link {
+      position: relative;
+      padding: 0.5rem 1.5rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      color: var(--cream);
+      text-decoration: none;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 3px;
+      bottom: -5px;
+      left: 0;
+      background-color: var(--light-blue);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+    /* Dropdown menu item styling */
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+      color: var(--cream);
+      transition: background-color 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--medium-blue);
+      color: white;
+    }
+
+    .dropdown-item:active {
+      transform: scale(0.98);
+    }
   </style>
 </head>
 <body class="bg-dark-bg">
@@ -151,13 +200,15 @@
           TRIVIA MASTER
         </a>
 
-        <!-- Navigation buttons -->
+        <!-- Navigation buttons with new style -->
         <div class="flex items-center gap-3 mb-4 md:mb-0">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="friends.html" class="nav-link">Friends</a>
           <a
             href="https://github.com/CrystalPT/Trivation/releases"
             target="_blank"
             rel="noopener noreferrer"
-            class="nav-button bg-medium-blue text-cream no-underline"
+            class="nav-link"
           >
             Downloads
           </a>
@@ -165,12 +216,12 @@
           <div id="loggedInNav" class="flex items-center gap-3">
             <button
               id="navCreateTrivia"
-              class="nav-button bg-medium-blue text-cream">
+              class="nav-link">
               Create Trivia
             </button>
             <button
               id="navMyTrivias"
-              class="nav-button bg-medium-blue text-cream">
+              class="nav-link">
               My Trivias
             </button>
           </div>
@@ -197,7 +248,7 @@
               </div>
               <ul class="py-1">
                 <li>
-                  <a href="account.html" class="flex items-center gap-3 px-4 py-2 text-cream hover:bg-medium-blue">
+                  <a href="account.html" class="dropdown-item">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -206,7 +257,15 @@
                   </a>
                 </li>
                 <li>
-                  <button id="dropdownSignOutBtn" class="flex items-center gap-3 px-4 py-2 text-red hover:bg-medium-blue w-full text-left">
+                  <a href="friends.html" class="dropdown-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Friends
+                  </a>
+                </li>
+                <li>
+                  <button id="dropdownSignOutBtn" class="dropdown-item text-red w-full text-left">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
