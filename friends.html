@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Friends - Trivia Master</title>
+
+  <!-- Tailwind CSS for styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Define color variables */
+    :root {
+      --dark-bg: #0d1321;
+      --dark-blue: #1d2d44;
+      --medium-blue: #3e5c76;
+      --light-blue: #748cab;
+      --cream: #f0ebd8;
+      --white: #ffffff;
+      --black: #000000;
+      --gray: #c8c8c8;
+      --red: #ff5050;
+      --green: #50c878;
+    }
+
+    /* Apply colors with CSS variables */
+    .bg-dark-bg { background-color: var(--dark-bg); }
+    .bg-dark-blue { background-color: var(--dark-blue); }
+    .bg-medium-blue { background-color: var(--medium-blue); }
+    .bg-light-blue { background-color: var(--light-blue); }
+    .bg-cream { background-color: var(--cream); }
+    .bg-red { background-color: var(--red); }
+    .bg-green { background-color: var(--green); }
+
+    .text-cream { color: var(--cream); }
+    .text-light-blue { color: var(--light-blue); }
+    .text-dark-blue { color: var(--dark-blue); }
+    .text-white { color: var(--white); }
+    .text-dark-bg { color: var(--dark-bg); }
+    .text-red { color: var(--red); }
+
+    .border-light-blue { border-color: var(--light-blue); }
+    .border-medium-blue { border-color: var(--medium-blue); }
+    .border-gray { border-color: var(--gray); }
+    .border-green { border-color: var(--green); }
+
+    /* New navigation style with underline effect */
+    .nav-link {
+      position: relative;
+      padding: 0.5rem 1.5rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      color: var(--cream);
+      text-decoration: none;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 3px;
+      bottom: -5px;
+      left: 0;
+      background-color: var(--light-blue);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+    /* Friends tabs navigation */
+    .friends-tab {
+      position: relative;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      color: var(--cream);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .friends-tab::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 3px;
+      bottom: 0;
+      left: 0;
+      background-color: var(--light-blue);
+      transition: width 0.3s ease;
+    }
+
+    .friends-tab:hover::after {
+      width: 100%;
+    }
+
+    .friends-tab.active {
+      color: var(--light-blue);
+    }
+
+    .friends-tab.active::after {
+      width: 100%;
+    }
+
+    /* Friend list animations */
+    .friend-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    .friend-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Action buttons */
+    .action-button {
+      padding: 0.3rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .action-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .action-button:active {
+      transform: translateY(1px);
+    }
+
+    /* Search animation */
+    .search-input {
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .search-input:focus {
+      border-color: var(--light-blue);
+      box-shadow: 0 0 0 3px rgba(116, 140, 171, 0.3);
+      outline: none;
+    }
+
+    /* Profile photo container animation */
+    #accountDropdownButton {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    #accountDropdownButton:hover {
+      transform: scale(1.05);
+    }
+
+    #accountDropdownButton:active {
+      transform: scale(0.95);
+    }
+
+    /* Animation for dropdown menu */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #accountDropdownMenu.animated {
+      animation: fadeIn 0.2s ease-out forwards;
+    }
+
+    /* Dropdown menu styling */
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+      color: var(--cream);
+      transition: background-color 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--medium-blue);
+      color: white;
+    }
+
+    .dropdown-item:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body class="bg-dark-bg">
+  <div class="min-h-screen p-6">
+    <!-- Header -->
+    <header class="mb-8 p-4 rounded-lg bg-dark-blue">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <a href="index.html" class="text-4xl font-bold mb-4 md:mb-0 text-cream no-underline">
+          TRIVIA MASTER
+        </a>
+
+        <!-- Navigation buttons with new style -->
+        <div class="flex items-center gap-4 mb-4 md:mb-0">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="friends.html" class="nav-link active">Friends</a>
+          <a href="https://github.com/CrystalPT/Trivation/releases" target="_blank" rel="noopener noreferrer" class="nav-link">
+            Downloads
+          </a>
+
+          <!-- These links will only be shown when logged in -->
+          <div id="loggedInNav" class="flex items-center gap-4" style="display: none;">
+            <a href="index.html?page=create-trivia" class="nav-link">Create Trivia</a>
+            <a href="index.html?page=my-trivias" class="nav-link">My Trivias</a>
+          </div>
+        </div>
+
+        <!-- User controls -->
+        <div class="flex items-center">
+          <div id="loggedOut" class="flex items-center gap-3">
+            <a href="login.html" class="nav-link">Sign In</a>
+            <a href="login.html?page=signup" class="nav-link bg-green text-white rounded-md">Sign Up</a>
+          </div>
+
+          <!-- Account Dropdown -->
+          <div id="userAccountDropdown" class="relative" style="display: none;">
+            <button id="accountDropdownButton" class="flex items-center gap-2 rounded-full focus:outline-none">
+              <div id="profilePhotoContainer" class="w-10 h-10 rounded-full overflow-hidden border-2 border-light-blue flex items-center justify-center bg-medium-blue">
+                <!-- Default profile icon if no image is set -->
+                <span id="defaultProfileIcon" class="text-cream text-lg font-semibold"></span>
+                <!-- Profile image will be loaded here if available -->
+                <img id="profilePhoto" src="" alt="Profile" class="w-full h-full object-cover" style="display: none;">
+              </div>
+            </button>
+
+            <!-- Dropdown menu -->
+            <div id="accountDropdownMenu" class="absolute right-0 mt-2 w-48 bg-dark-blue border border-light-blue rounded-lg shadow-lg z-50" style="display: none;">
+              <div class="p-3 border-b border-medium-blue">
+                <p id="dropdownUsername" class="font-semibold text-cream truncate"></p>
+                <p id="dropdownEmail" class="text-sm text-light-blue truncate"></p>
+              </div>
+              <ul class="py-1">
+                <li>
+                  <a href="account.html" class="dropdown-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Profile settings
+                  </a>
+                </li>
+                <li>
+                  <a href="friends.html" class="dropdown-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Friends
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="dropdown-item" id="changeProfilePhotoBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Change profile photo
+                  </a>
+                </li>
+                <li>
+                  <button id="dropdownSignOutBtn" class="dropdown-item text-red w-full text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Sign out
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Hidden file input for profile photo upload -->
+            <input type="file" id="profilePhotoInput" accept="image/jpeg, image/png" style="display: none;">
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Messages -->
+    <div id="errorMessage" class="mb-4 p-3 rounded-lg bg-red text-white" style="display: none;"></div>
+    <div id="successMessage" class="mb-4 p-3 rounded-lg bg-green text-white" style="display: none;"></div>
+
+    <!-- Login required message (shown to non-logged in users) -->
+    <div id="loginRequiredMessage" class="mb-8 p-6 rounded-lg bg-dark-blue text-center" style="display: none;">
+      <h2 class="text-2xl mb-4 text-cream">Login Required</h2>
+      <p class="text-light-blue mb-4">You need to be logged in to access the friends feature.</p>
+      <a href="login.html" class="px-4 py-2 bg-medium-blue text-cream rounded-lg inline-block hover:bg-light-blue transition-colors">
+        Sign In
+      </a>
+    </div>
+
+    <!-- Friends Content (Only shown to logged in users) -->
+    <div id="friendsContent" class="mb-8" style="display: none;">
+      <!-- Friends Tabs -->
+      <div class="flex border-b border-medium-blue mb-6">
+        <button id="myFriendsTab" class="friends-tab active" data-tab="myFriends">My Friends</button>
+        <button id="addFriendsTab" class="friends-tab" data-tab="addFriends">Add Friends</button>
+        <button id="pendingTab" class="friends-tab" data-tab="pending">
+          Pending
+          <span id="pendingCount" class="inline-block px-2 py-0.5 ml-1 bg-red text-white text-xs rounded-full" style="display: none;">0</span>
+        </button>
+      </div>
+
+      <!-- My Friends Tab Content -->
+      <div id="myFriendsContent" class="rounded-lg p-6 bg-dark-blue">
+        <h2 class="text-2xl mb-4 text-cream">My Friends</h2>
+
+        <!-- Empty state -->
+        <div id="noFriendsMessage" class="text-center p-6">
+          <p class="text-light-blue mb-4">You don't have any friends yet.</p>
+          <button id="goToAddFriendsBtn" class="px-4 py-2 bg-medium-blue text-cream rounded-lg hover:bg-light-blue transition-colors">
+            Find Friends
+          </button>
+        </div>
+
+        <!-- Friends list -->
+        <div id="friendsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" style="display: none;"></div>
+      </div>
+
+      <!-- Add Friends Tab Content -->
+      <div id="addFriendsContent" class="rounded-lg p-6 bg-dark-blue" style="display: none;">
+        <h2 class="text-2xl mb-4 text-cream">Add Friends</h2>
+
+        <!-- Search bar -->
+        <div class="mb-6">
+          <div class="relative">
+            <input
+              type="text"
+              id="searchUsers"
+              placeholder="Search users by username or email..."
+              class="w-full p-3 pr-10 rounded-lg border border-light-blue bg-dark-bg text-cream search-input"
+            />
+            <div class="absolute right-3 top-3 text-light-blue">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading state -->
+        <div id="loadingUsers" class="text-center p-4">
+          <p class="text-light-blue">Loading users...</p>
+        </div>
+
+        <!-- Empty state -->
+        <div id="noUsersMessage" class="text-center p-6" style="display: none;">
+          <p class="text-light-blue">No users found matching your search.</p>
+        </div>
+
+        <!-- Users list -->
+        <div id="usersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" style="display: none;"></div>
+      </div>
+
+      <!-- Pending Requests Tab Content -->
+      <div id="pendingContent" class="rounded-lg p-6 bg-dark-blue" style="display: none;">
+        <h2 class="text-2xl mb-4 text-cream">Pending Friend Requests</h2>
+
+        <!-- Incoming Requests -->
+        <div class="mb-8">
+          <h3 class="text-xl mb-3 text-light-blue">Incoming Requests</h3>
+
+          <!-- Empty state -->
+          <div id="noIncomingRequestsMessage" class="text-light-blue p-2">
+            You don't have any incoming friend requests.
+          </div>
+
+          <!-- Incoming requests list -->
+          <div id="incomingRequestsList" class="grid grid-cols-1 md:grid-cols-2 gap-4" style="display: none;"></div>
+        </div>
+
+        <!-- Outgoing Requests -->
+        <div>
+          <h3 class="text-xl mb-3 text-light-blue">Outgoing Requests</h3>
+
+          <!-- Empty state -->
+          <div id="noOutgoingRequestsMessage" class="text-light-blue p-2">
+            You don't have any outgoing friend requests.
+          </div>
+
+          <!-- Outgoing requests list -->
+          <div id="outgoingRequestsList" class="grid grid-cols-1 md:grid-cols-2 gap-4" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Firebase configuration
+    const FIREBASE_API_KEY = "AIzaSyDIgbZvfYb2kxazfrZcrddAVEZ7tVdWvhA";
+    const FIREBASE_DATABASE_URL = "https://trivia-20b98-default-rtdb.europe-west1.firebasedatabase.app";
+
+    // Global state
+    let user = null;
+    let userData = null;
+    let authToken = null;
+    let allUsers = [];
+    let friends = [];
+    let incomingRequests = [];
+    let outgoingRequests = [];
+    let currentTab = 'myFriends';
+
+    // Initialization on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check authentication state
+      checkAuthState().then(isLoggedIn => {
+        if (isLoggedIn) {
+          // Show friends content
+          document.getElementById('friendsContent').style.display = 'block';
+          document.getElementById('loginRequiredMessage').style.display = 'none';
+
+          // Load friends data
+          loadFriendsData();
+
+          // Setup tabs
+          setupTabs();
+
+          // Setup search functionality
+          setupSearch();
+
+          // Load all users for Add Friends tab
+          loadAllUsers();
+        } else {
+          // Show login required message
+          document.getElementById('friendsContent').style.display = 'none';
+          document.getElementById('loginRequiredMessage').style.display = 'block';
+        }
+      });
+
+      // Setup account dropdown if user is logged in
+      setupAccountDropdown();
+
+      // Add event listener for the "Find Friends" button
+      document.getElementById('goToAddFriendsBtn').addEventListener('click', () => {
+        switchTab('addFriends');
+      });
+    });
+
+    // Check authentication state
+    async function checkAuthState() {
+      const savedUser = localStorage.getItem('triviaUser');
+      const savedToken = localStorage.getItem('triviaToken');
+
+      if (savedUser && savedToken) {
+        user = JSON.parse(savedUser);
+        authToken = savedToken;
+
+        // Show logged in UI
+        document.getElementById('loggedOut').style.display = 'none';
+        document.getElementById('loggedInNav').style.display = 'flex';
+        document.getElementById('userAccountDropdown').style.display = 'block';
+
+        // Update user profile in dropdown
+        updateUserDropdownInfo();
+
+        // Load user data
+        await fetchUserData(user.localId, savedToken);
+        return true;
+      } else {
+        // Show logged out UI
+        document.getElementById('loggedOut').style.display = 'flex';
+        document.getElementById('loggedInNav').style.display = 'none';
+        document.getElementById('userAccountDropdown').style.display = 'none';
+        return false;
+      }
+    }
+
+    // Setup Account Dropdown
+    function setupAccountDropdown() {
+      // Elements
+      const accountDropdownButton = document.getElementById('accountDropdownButton');
+      const accountDropdownMenu = document.getElementById('accountDropdownMenu');
+      const dropdownSignOutBtn = document.getElementById('dropdownSignOutBtn');
+      const changeProfilePhotoBtn = document.getElementById('changeProfilePhotoBtn');
+      const profilePhotoInput = document.getElementById('profilePhotoInput');
+
+      if (!accountDropdownButton) return;
+
+      // Toggle dropdown when clicking the button
+      accountDropdownButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (accountDropdownMenu.style.display === 'none') {
+          accountDropdownMenu.style.display = 'block';
+          // Add animation class
+          accountDropdownMenu.classList.add('animated');
+        } else {
+          accountDropdownMenu.style.display = 'none';
+        }
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (accountDropdownMenu.style.display !== 'none' &&
+            !accountDropdownButton.contains(e.target) &&
+            !accountDropdownMenu.contains(e.target)) {
+          accountDropdownMenu.style.display = 'none';
+        }
+      });
+
+      // Sign out functionality
+      dropdownSignOutBtn.addEventListener('click', () => {
+        handleSignOut();
+      });
+
+      // Profile photo change
+      changeProfilePhotoBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        profilePhotoInput.click();
+      });
+
+      // Handle file selection
+      profilePhotoInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          const file = e.target.files[0];
+
+          // Check file type
+          if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+            showError('Please select a JPEG or PNG image.');
+            return;
+          }
+
+          // Check file size (limit to 2MB)
+          if (file.size > 2 * 1024 * 1024) {
+            showError('Image size must be less than 2MB.');
+            return;
+          }
+
+          const reader = new FileReader();
+
+          reader.onload = function(e) {
+            // Display the image
+            const profilePhoto = document.getElementById('profilePhoto');
+            const defaultProfileIcon = document.getElementById('defaultProfileIcon');
+            profilePhoto.src = e.target.result;
+            profilePhoto.style.display = 'block';
+            defaultProfileIcon.style.display = 'none';
+
+            // Save to localStorage
+            localStorage.setItem('profilePhotoData', e.target.result);
+
+            // Option: Upload to server/Firebase if needed
+            // uploadProfilePhoto(file);
+
+            // Close dropdown and show success message
+            accountDropdownMenu.style.display = 'none';
+            showSuccess('Profile photo updated!');
+          };
+
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // Update user info in the dropdown
+    function updateUserDropdownInfo() {
+      if (!user) return;
+
+      const dropdownUsername = document.getElementById('dropdownUsername');
+      const dropdownEmail = document.getElementById('dropdownEmail');
+      const defaultProfileIcon = document.getElementById('defaultProfileIcon');
+      const profilePhoto = document.getElementById('profilePhoto');
+
+      if (!dropdownUsername || !dropdownEmail || !defaultProfileIcon || !profilePhoto) return;
+
+      // Set username and email
+      dropdownUsername.textContent = user.displayName || 'User';
+      dropdownEmail.textContent = user.email || '';
+
+      // Set initials for default icon
+      if (user.displayName) {
+        defaultProfileIcon.textContent = user.displayName.substring(0, 1).toUpperCase();
+      } else if (user.email) {
+        defaultProfileIcon.textContent = user.email.substring(0, 1).toUpperCase();
+      } else {
+        defaultProfileIcon.textContent = 'U';
+      }
+
+      // Check if user has a profile photo
+      const savedPhoto = localStorage.getItem('profilePhotoData');
+      if (savedPhoto) {
+        profilePhoto.src = savedPhoto;
+        profilePhoto.style.display = 'block';
+        defaultProfileIcon.style.display = 'none';
+      } else {
+        profilePhoto.style.display = 'none';
+        defaultProfileIcon.style.display = 'block';
+      }
+    }
+
+    // Fetch user data from Firebase
+    async function fetchUserData(userId, token) {
+      try {
+        const response = await fetch(`${FIREBASE_DATABASE_URL}/users/${userId}.json?auth=${token}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data) {
+            userData = data;
+
+            // If username is available, update display name
+            if (data.username) {
+              user.displayName = data.username;
+              localStorage.setItem('triviaUser', JSON.stringify(user));
+              updateUserDropdownInfo();
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+
+    // Handle sign out
+    function handleSignOut() {
+      // Clear authentication data
+      localStorage.removeItem('triviaUser');
+      localStorage.removeItem('triviaToken');
+      // Don't remove profile photo - it can be kept for next login
+      //localStorage.removeItem('profilePhotoData');
+
+      user = null;
+      userData = null;
+      authToken = null;
+
+      // Show success message
+      showSuccess('Signed out successfully!');
+
+      // Redirect to home after short delay
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1000);
+    }
+
+    // Setup tabs functionality
+    function setupTabs() {
+      // Get all tab buttons
+      const tabButtons = document.querySelectorAll('.friends-tab');
+
+      // Add click event listener to each tab
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const tabName = button.getAttribute('data-tab');
+          switchTab(tabName);
+        });
+      });
+    }
+
+    // Switch between tabs
+    function switchTab(tabName) {
+      // Update current tab
+      currentTab = tabName;
+
+      // Update active tab button
+      const tabButtons = document.querySelectorAll('.friends-tab');
+      tabButtons.forEach(button => {
+        if (button.getAttribute('data-tab') === tabName) {
+          button.classList.add('active');
+        } else {
+          button.classList.remove('active');
+        }
+      });
+
+      // Hide all tab content
+      document.getElementById('myFriendsContent').style.display = 'none';
+      document.getElementById('addFriendsContent').style.display = 'none';
+      document.getElementById('pendingContent').style.display = 'none';
+
+      // Show selected tab content
+      document.getElementById(`${tabName}Content`).style.display = 'block';
+    }
+
+    // Setup search functionality
+    function setupSearch() {
+      const searchInput = document.getElementById('searchUsers');
+
+      searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        filterUsers(searchTerm);
+      });
+    }
+
+    // Filter users based on search term
+    function filterUsers(searchTerm) {
+      const usersList = document.getElementById('usersList');
+      const noUsersMessage = document.getElementById('noUsersMessage');
+      let hasVisibleUsers = false;
+
+      // Get all user cards
+      const userCards = usersList.querySelectorAll('.friend-card');
+
+      // Filter the cards
+      userCards.forEach(card => {
+        const userName = card.getAttribute('data-username').toLowerCase();
+        const userEmail = card.getAttribute('data-email').toLowerCase();
+
+        if (userName.includes(searchTerm) || userEmail.includes(searchTerm)) {
+          card.style.display = 'block';
+          hasVisibleUsers = true;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Show/hide no users message
+      if (hasVisibleUsers) {
+        noUsersMessage.style.display = 'none';
+        usersList.style.display = 'grid';
+      } else {
+        noUsersMessage.style.display = 'block';
+        usersList.style.display = 'none';
+      }
+    }
+
+    // Load friends data
+    async function loadFriendsData() {
+      if (!user || !authToken) return;
+
+      try {
+        // First, check if the friends structure exists
+        const userFriendsRef = await fetch(`${FIREBASE_DATABASE_URL}/user_friends/${user.localId}.json?auth=${authToken}`);
+        const friendRequests = await fetch(`${FIREBASE_DATABASE_URL}/friend_requests.json?auth=${authToken}`);
+
+        // Initialize friends data if needed
+        if (userFriendsRef.ok) {
+          const friendsData = await userFriendsRef.json();
+
+          if (friendsData) {
+            // We have friends data
+            friends = Object.keys(friendsData).filter(key => friendsData[key] === true);
+            renderFriendsList();
+          } else {
+            // No friends yet
+            friends = [];
+            document.getElementById('noFriendsMessage').style.display = 'block';
+            document.getElementById('friendsList').style.display = 'none';
+          }
+        }
+
+        // Get friend requests
+        if (friendRequests.ok) {
+          const requestsData = await friendRequests.json();
+
+          if (requestsData) {
+            // Process incoming requests
+            incomingRequests = Object.keys(requestsData)
+              .filter(key => requestsData[key].to === user.localId && requestsData[key].status === 'pending')
+              .map(key => ({
+                id: key,
+                from: requestsData[key].from
+              }));
+
+            // Process outgoing requests
+            outgoingRequests = Object.keys(requestsData)
+              .filter(key => requestsData[key].from === user.localId && requestsData[key].status === 'pending')
+              .map(key => ({
+                id: key,
+                to: requestsData[key].to
+              }));
+
+            // Update pending count
+            updatePendingCount();
+
+            // Render requests
+            renderFriendRequests();
+          } else {
+            // No requests
+            incomingRequests = [];
+            outgoingRequests = [];
+
+            document.getElementById('noIncomingRequestsMessage').style.display = 'block';
+            document.getElementById('incomingRequestsList').style.display = 'none';
+            document.getElementById('noOutgoingRequestsMessage').style.display = 'block';
+            document.getElementById('outgoingRequestsList').style.display = 'none';
+          }
+        }
+      } catch (error) {
+        console.error("Error loading friends data:", error);
+        showError("Failed to load friends data. Please try again.");
+      }
+    }
+
+    // Load all users for Add Friends tab
+    async function loadAllUsers() {
+      if (!user || !authToken) return;
+
+      try {
+        const response = await fetch(`${FIREBASE_DATABASE_URL}/users.json`);
+
+        if (response.ok) {
+          const data = await response.json();
+
+          if (data) {
+            // Convert to array and filter out current user
+            allUsers = Object.keys(data)
+              .filter(key => key !== user.localId)
+              .map(key => ({
+                id: key,
+                username: data[key].username || 'User',
+                email: data[key].email || ''
+              }));
+
+            // Hide loading, show users list
+            document.getElementById('loadingUsers').style.display = 'none';
+
+            if (allUsers.length > 0) {
+              renderUsersList();
+              document.getElementById('usersList').style.display = 'grid';
+              document.getElementById('noUsersMessage').style.display = 'none';
+            } else {
+              document.getElementById('usersList').style.display = 'none';
+              document.getElementById('noUsersMessage').style.display = 'block';
+            }
+          } else {
+            // No users found
+            document.getElementById('loadingUsers').style.display = 'none';
+            document.getElementById('usersList').style.display = 'none';
+            document.getElementById('noUsersMessage').style.display = 'block';
+          }
+        }
+      } catch (error) {
+        console.error("Error loading users:", error);
+        document.getElementById('loadingUsers').style.display = 'none';
+        showError("Failed to load users. Please try again.");
+      }
+    }
+
+    // Update pending count badge
+    function updatePendingCount() {
+      const pendingCount = document.getElementById('pendingCount');
+      const count = incomingRequests.length;
+
+      if (count > 0) {
+        pendingCount.textContent = count;
+        pendingCount.style.display = 'inline-block';
+      } else {
+        pendingCount.style.display = 'none';
+      }
+    }
+
+    // Render friends list
+    async function renderFriendsList() {
+      if (friends.length === 0) {
+        document.getElementById('noFriendsMessage').style.display = 'block';
+        document.getElementById('friendsList').style.display = 'none';
+        return;
+      }
+
+      const friendsList = document.getElementById('friendsList');
+      friendsList.innerHTML = '';
+
+      try {
+        // Get all users to find friend details
+        const response = await fetch(`${FIREBASE_DATABASE_URL}/users.json`);
+
+        if (response.ok) {
+          const usersData = await response.json();
+
+          // Create friend cards
+          friends.forEach(friendId => {
+            if (usersData[friendId]) {
+              const friendData = usersData[friendId];
+              const friendCard = createFriendCard(friendId, friendData.username || 'User', friendData.email || '', true);
+              friendsList.appendChild(friendCard);
+            }
+          });
+
+          document.getElementById('noFriendsMessage').style.display = 'none';
+          friendsList.style.display = 'grid';
+        }
+      } catch (error) {
+        console.error("Error rendering friends:", error);
+        showError("Failed to load friends. Please try again.");
+      }
+    }
+
+    // Render users list for Add Friends tab
+    function renderUsersList() {
+      const usersList = document.getElementById('usersList');
+      usersList.innerHTML = '';
+
+      // Filter out users who are already friends or have pending requests
+      const filteredUsers = allUsers.filter(userData => {
+        const isFriend = friends.includes(userData.id);
+        const hasIncomingRequest = incomingRequests.some(req => req.from === userData.id);
+        const hasOutgoingRequest = outgoingRequests.some(req => req.to === userData.id);
+
+        // Only include users who are not friends and don't have pending requests
+        return !isFriend && !hasIncomingRequest && !hasOutgoingRequest;
+      });
+
+      if (filteredUsers.length === 0) {
+        document.getElementById('noUsersMessage').style.display = 'block';
+        usersList.style.display = 'none';
+        return;
+      }
+
+      filteredUsers.forEach(userData => {
+        const userCard = createFriendCard(userData.id, userData.username, userData.email, false);
+        usersList.appendChild(userCard);
+      });
+    }
+
+    // Render friend requests
+    async function renderFriendRequests() {
+      const incomingList = document.getElementById('incomingRequestsList');
+      const outgoingList = document.getElementById('outgoingRequestsList');
+
+      incomingList.innerHTML = '';
+      outgoingList.innerHTML = '';
+
+      try {
+        // Get all users to find requester details
+        const response = await fetch(`${FIREBASE_DATABASE_URL}/users.json`);
+
+        if (response.ok) {
+          const usersData = await response.json();
+
+          // Render incoming requests
+          if (incomingRequests.length > 0) {
+            incomingRequests.forEach(request => {
+              if (usersData[request.from]) {
+                const userData = usersData[request.from];
+                const requestCard = createRequestCard(
+                  request.id,
+                  request.from,
+                  userData.username || 'User',
+                  userData.email || '',
+                  'incoming'
+                );
+                incomingList.appendChild(requestCard);
+              }
+            });
+
+            document.getElementById('noIncomingRequestsMessage').style.display = 'none';
+            incomingList.style.display = 'grid';
+          } else {
+            document.getElementById('noIncomingRequestsMessage').style.display = 'block';
+            incomingList.style.display = 'none';
+          }
+
+          // Render outgoing requests
+          if (outgoingRequests.length > 0) {
+            outgoingRequests.forEach(request => {
+              if (usersData[request.to]) {
+                const userData = usersData[request.to];
+                const requestCard = createRequestCard(
+                  request.id,
+                  request.to,
+                  userData.username || 'User',
+                  userData.email || '',
+                  'outgoing'
+                );
+                outgoingList.appendChild(requestCard);
+              }
+            });
+
+            document.getElementById('noOutgoingRequestsMessage').style.display = 'none';
+            outgoingList.style.display = 'grid';
+          } else {
+            document.getElementById('noOutgoingRequestsMessage').style.display = 'block';
+            outgoingList.style.display = 'none';
+          }
+        }
+      } catch (error) {
+        console.error("Error rendering requests:", error);
+        showError("Failed to load friend requests. Please try again.");
+      }
+    }
+
+    // Create a friend card
+    function createFriendCard(userId, username, email, isFriend) {
+      const card = document.createElement('div');
+      card.className = 'friend-card p-4 rounded-lg bg-medium-blue';
+      card.setAttribute('data-userid', userId);
+      card.setAttribute('data-username', username);
+      card.setAttribute('data-email', email);
+
+      // Get first letter of username for profile icon
+      const initial = username.charAt(0).toUpperCase();
+
+      // Create card content
+      card.innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-dark-blue text-cream flex items-center justify-center font-bold text-lg">
+            ${initial}
+          </div>
+          <div class="flex-grow min-w-0">
+            <h4 class="font-semibold text-cream truncate">${username}</h4>
+            <p class="text-light-blue text-sm truncate">${email}</p>
+          </div>
+          ${isFriend ?
+            `<button class="action-button bg-red text-white remove-friend-btn" data-userid="${userId}">
+               Remove
+             </button>`
+            :
+            `<button class="action-button bg-green text-white add-friend-btn" data-userid="${userId}">
+               Add Friend
+             </button>`
+          }
+        </div>
+      `;
+
+      // Add event listeners
+      if (isFriend) {
+        card.querySelector('.remove-friend-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          removeFriend(userId);
+        });
+      } else {
+        card.querySelector('.add-friend-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          sendFriendRequest(userId);
+        });
+      }
+
+      return card;
+    }
+
+    // Create a friend request card
+    function createRequestCard(requestId, userId, username, email, type) {
+      const card = document.createElement('div');
+      card.className = 'friend-card p-4 rounded-lg bg-medium-blue';
+      card.setAttribute('data-requestid', requestId);
+      card.setAttribute('data-userid', userId);
+
+      // Get first letter of username for profile icon
+      const initial = username.charAt(0).toUpperCase();
+
+      // Create card content
+      card.innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-dark-blue text-cream flex items-center justify-center font-bold text-lg">
+            ${initial}
+          </div>
+          <div class="flex-grow min-w-0">
+            <h4 class="font-semibold text-cream truncate">${username}</h4>
+            <p class="text-light-blue text-sm truncate">${email}</p>
+          </div>
+          ${type === 'incoming' ?
+            `<div class="flex gap-2">
+               <button class="action-button bg-green text-white accept-request-btn" data-requestid="${requestId}">
+                 Accept
+               </button>
+               <button class="action-button bg-red text-white reject-request-btn" data-requestid="${requestId}">
+                 Reject
+               </button>
+             </div>`
+            :
+            `<button class="action-button bg-red text-white cancel-request-btn" data-requestid="${requestId}">
+               Cancel
+             </button>`
+          }
+        </div>
+      `;
+
+      // Add event listeners
+      if (type === 'incoming') {
+        card.querySelector('.accept-request-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          acceptFriendRequest(requestId, userId);
+        });
+
+        card.querySelector('.reject-request-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          rejectFriendRequest(requestId);
+        });
+      } else {
+        card.querySelector('.cancel-request-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          cancelFriendRequest(requestId);
+        });
+      }
+
+      return card;
+    }
+
+    // Send a friend request
+    async function sendFriendRequest(recipientId) {
+      if (!user || !authToken) return;
+
+      try {
+        // Create a new friend request
+        const requestData = {
+          from: user.localId,
+          to: recipientId,
+          status: 'pending',
+          created_at: Date.now()
+        };
+
+        const response = await fetch(`${FIREBASE_DATABASE_URL}/friend_requests.json?auth=${authToken}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+
+          if (data.name) {
+            // Add to outgoing requests
+            outgoingRequests.push({
+              id: data.name,
+              to: recipientId
+            });
+
+            // Update UI
+            showSuccess('Friend request sent!');
+
+            // Remove the user from the add friends list
+            const userCard = document.querySelector(`.friend-card[data-userid="${recipientId}"]`);
+            if (userCard) {
+              userCard.remove();
+            }
+
+            // Re-render users list if needed
+            if (document.getElementById('usersList').children.length === 0) {
+              document.getElementById('usersList').style.display = 'none';
+              document.getElementById('noUsersMessage').style.display = 'block';
+            }
+          }
+        } else {
+          showError('Failed to send friend request. Please try again.');
+        }
+      } catch (error) {
+        console.error("Error sending friend request:", error);
+        showError('An error occurred. Please try again.');
+      }
+    }
+
+    // Accept a friend request
+    async function acceptFriendRequest(requestId, senderId) {
+      if (!user || !authToken) return;
+
+      try {
+        // Update request status
+        const updateResponse = await fetch(`${FIREBASE_DATABASE_URL}/friend_requests/${requestId}.json?auth=${authToken}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            status: 'accepted',
+            accepted_at: Date.now()
+          })
+        });
+
+        if (updateResponse.ok) {
+          // Add both users as friends
+          const addFriendPromises = [
+            // Add sender to current user's friends
+            fetch(`${FIREBASE_DATABASE_URL}/user_friends/${user.localId}/${senderId}.json?auth=${authToken}`, {
+              method: 'PUT',
+              body: JSON.stringify(true)
+            }),
+
+            // Add current user to sender's friends
+            fetch(`${FIREBASE_DATABASE_URL}/user_friends/${senderId}/${user.localId}.json?auth=${authToken}`, {
+              method: 'PUT',
+              body: JSON.stringify(true)
+            })
+          ];
+
+          await Promise.all(addFriendPromises);
+
+          // Update local data
+          friends.push(senderId);
+          incomingRequests = incomingRequests.filter(req => req.id !== requestId);
+
+          // Update UI
+          showSuccess('Friend request accepted!');
+          updatePendingCount();
+
+          // Re-render friends and requests
+          renderFriendsList();
+          renderFriendRequests();
+
+          // Reload and re-render the users list to remove the new friend
+          await loadAllUsers();
+        } else {
+          showError('Failed to accept friend request. Please try again.');
+        }
+      } catch (error) {
+        console.error("Error accepting friend request:", error);
+        showError('An error occurred. Please try again.');
+      }
+    }
+
+    // Reject a friend request
+    async function rejectFriendRequest(requestId) {
+      if (!user || !authToken) return;
+
+      try {
+        // Update request status
+        const updateResponse = await fetch(`${FIREBASE_DATABASE_URL}/friend_requests/${requestId}.json?auth=${authToken}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            status: 'rejected',
+            rejected_at: Date.now()
+          })
+        });
+
+        if (updateResponse.ok) {
+          // Update local data
+          incomingRequests = incomingRequests.filter(req => req.id !== requestId);
+
+          // Update UI
+          showSuccess('Friend request rejected');
+          updatePendingCount();
+
+          // Re-render requests
+          renderFriendRequests();
+        } else {
+          showError('Failed to reject friend request. Please try again.');
+        }
+      } catch (error) {
+        console.error("Error rejecting friend request:", error);
+        showError('An error occurred. Please try again.');
+      }
+    }
+
+    // Cancel a friend request
+    async function cancelFriendRequest(requestId) {
+      if (!user || !authToken) return;
+
+      try {
+        // Delete the request
+        const deleteResponse = await fetch(`${FIREBASE_DATABASE_URL}/friend_requests/${requestId}.json?auth=${authToken}`, {
+          method: 'DELETE'
+        });
+
+        if (deleteResponse.ok) {
+          // Find the request to get the recipient ID
+          const request = outgoingRequests.find(req => req.id === requestId);
+          const recipientId = request ? request.to : null;
+
+          // Remove from local outgoing requests
+          outgoingRequests = outgoingRequests.filter(req => req.id !== requestId);
+
+          // Update UI
+          showSuccess('Friend request canceled');
+
+          // Re-render requests
+          renderFriendRequests();
+
+          // Re-load all users to include the user we canceled the request to
+          await loadAllUsers();
+        } else {
+          showError('Failed to cancel friend request. Please try again.');
+        }
+      } catch (error) {
+        console.error("Error canceling friend request:", error);
+        showError('An error occurred. Please try again.');
+      }
+    }
+
+    // Remove a friend
+    async function removeFriend(friendId) {
+      if (!user || !authToken) return;
+
+      if (!confirm("Are you sure you want to remove this friend?")) {
+        return;
+      }
+
+      try {
+        // Remove friend relationship from both users
+        const removePromises = [
+          // Remove from current user's friends
+          fetch(`${FIREBASE_DATABASE_URL}/user_friends/${user.localId}/${friendId}.json?auth=${authToken}`, {
+            method: 'DELETE'
+          }),
+
+          // Remove current user from friend's friends
+          fetch(`${FIREBASE_DATABASE_URL}/user_friends/${friendId}/${user.localId}.json?auth=${authToken}`, {
+            method: 'DELETE'
+          })
+        ];
+
+        await Promise.all(removePromises);
+
+        // Update local data
+        friends = friends.filter(id => id !== friendId);
+
+        // Update UI
+        showSuccess('Friend removed');
+
+        // Re-render friends list
+        renderFriendsList();
+
+        // Re-load all users to include the removed friend
+        await loadAllUsers();
+      } catch (error) {
+        console.error("Error removing friend:", error);
+        showError('An error occurred. Please try again.');
+      }
+    }
+
+    // Show error message
+    function showError(message) {
+      const errorMsg = document.getElementById('errorMessage');
+      errorMsg.textContent = message;
+      errorMsg.style.display = 'block';
+
+      setTimeout(() => {
+        errorMsg.style.display = 'none';
+      }, 5000);
+    }
+
+    // Show success message
+    function showSuccess(message) {
+      const successMsg = document.getElementById('successMessage');
+      successMsg.textContent = message;
+      successMsg.style.display = 'block';
+
+      setTimeout(() => {
+        successMsg.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
