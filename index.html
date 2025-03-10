@@ -37,14 +37,14 @@
     .bg-cream { background-color: var(--cream); }
     .bg-red { background-color: var(--red); }
     .bg-green { background-color: var(--green); }
-    
+
     .text-cream { color: var(--cream); }
     .text-light-blue { color: var(--light-blue); }
     .text-dark-blue { color: var(--dark-blue); }
     .text-white { color: var(--white); }
     .text-dark-bg { color: var(--dark-bg); }
     .text-red { color: var(--red); }
-    
+
     .border-light-blue { border-color: var(--light-blue); }
     .border-medium-blue { border-color: var(--medium-blue); }
     .border-gray { border-color: var(--gray); }
@@ -65,19 +65,19 @@
       border: none;
       cursor: pointer;
     }
-    
+
     /* Button hover effect */
     .nav-button:hover {
       transform: translateY(-1px);
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    
+
     /* Button click effect */
     .nav-button:active {
       transform: translateY(1px);
       box-shadow: none;
     }
-    
+
     /* Dropdown menu item styling */
     .dropdown-item {
       display: flex;
@@ -88,39 +88,39 @@
       transition: background-color 0.2s, color 0.2s;
       text-decoration: none;
     }
-    
+
     .dropdown-item:hover {
       background-color: var(--medium-blue);
       color: white;
     }
-    
+
     .dropdown-item:active {
       transform: scale(0.98);
     }
-    
+
     /* Profile photo container animation */
     #accountDropdownButton {
       transition: transform 0.2s, box-shadow 0.2s;
     }
-    
+
     #accountDropdownButton:hover {
       transform: scale(1.05);
     }
-    
+
     #accountDropdownButton:active {
       transform: scale(0.95);
     }
-    
+
     /* Animation for dropdown menu */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    
+
     #accountDropdownMenu.animated {
       animation: fadeIn 0.2s ease-out forwards;
     }
-    
+
     /* Custom scrollbar for the dropdown if it gets too large */
     #accountDropdownMenu {
       max-height: 80vh;
@@ -128,20 +128,20 @@
       scrollbar-width: thin;
       scrollbar-color: var(--medium-blue) var(--dark-blue);
     }
-    
+
     #accountDropdownMenu::-webkit-scrollbar {
       width: 6px;
     }
-    
+
     #accountDropdownMenu::-webkit-scrollbar-track {
       background: var(--dark-blue);
     }
-    
+
     #accountDropdownMenu::-webkit-scrollbar-thumb {
       background-color: var(--medium-blue);
       border-radius: 6px;
     }
-    
+
     /* Form controls */
     .form-input {
       transition: border-color 0.2s, box-shadow 0.2s;
@@ -152,7 +152,7 @@
       border-color: var(--light-blue);
       box-shadow: 0 0 0 2px rgba(116, 140, 171, 0.3);
     }
-    
+
     /* Button styles */
     .form-button {
       transition: transform 0.1s, box-shadow 0.2s;
@@ -167,6 +167,35 @@
       transform: translateY(1px);
       box-shadow: none;
     }
+
+    /* New navigation style with underline effect */
+    .nav-link {
+      position: relative;
+      padding: 0.5rem 1.5rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      color: var(--cream);
+      text-decoration: none;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 3px;
+      bottom: -5px;
+      left: 0;
+      background-color: var(--light-blue);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-link.active::after {
+      width: 100%;
+    }
   </style>
 </head>
 <body class="bg-dark-bg">
@@ -178,27 +207,28 @@
           TRIVIA MASTER
         </a>
 
-        <!-- Navigation buttons with consistent alignment -->
+        <!-- Navigation buttons with new style (without Friends) -->
         <div class="flex items-center gap-3 mb-4 md:mb-0">
+          <a href="index.html" class="nav-link active">Home</a>
           <a
             href="https://github.com/CrystalPT/Trivation/releases"
             target="_blank"
             rel="noopener noreferrer"
-            class="nav-button bg-medium-blue text-cream no-underline"
+            class="nav-link"
           >
             Downloads
           </a>
-          
+
           <!-- These links will only be shown when logged in -->
           <div id="loggedInNav" class="flex items-center gap-3" style="display: none;">
-            <button 
-              id="navCreateTrivia" 
-              class="nav-button bg-medium-blue text-cream">
+            <button
+              id="navCreateTrivia"
+              class="nav-link">
               Create Trivia
             </button>
-            <button 
-              id="navMyTrivias" 
-              class="nav-button bg-medium-blue text-cream">
+            <button
+              id="navMyTrivias"
+              class="nav-link">
               My Trivias
             </button>
           </div>
@@ -214,7 +244,7 @@
               Sign Up
             </a>
           </div>
-          
+
           <!-- Account Dropdown -->
           <div id="userAccountDropdown" class="relative" style="display: none;">
             <button id="accountDropdownButton" class="flex items-center gap-2 rounded-full focus:outline-none">
@@ -225,7 +255,7 @@
                 <img id="profilePhoto" src="" alt="Profile" class="w-full h-full object-cover" style="display: none;">
               </div>
             </button>
-            
+
             <!-- Dropdown menu -->
             <div id="accountDropdownMenu" class="absolute right-0 mt-2 w-48 bg-dark-blue border border-light-blue rounded-lg shadow-lg z-50" style="display: none;">
               <div class="p-3 border-b border-medium-blue">
@@ -240,6 +270,14 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     Profile settings
+                  </a>
+                </li>
+                <li>
+                  <a href="friends.html" class="dropdown-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Friends
                   </a>
                 </li>
                 <li>
@@ -260,7 +298,7 @@
                 </li>
               </ul>
             </div>
-            
+
             <!-- Hidden file input for profile photo upload -->
             <input type="file" id="profilePhotoInput" accept="image/jpeg, image/png" style="display: none;">
           </div>
@@ -602,7 +640,7 @@
       const urlParams = new URLSearchParams(window.location.search);
       const page = urlParams.get('page');
       const id = urlParams.get('id');
-      
+
       // Check authentication state first
       checkAuthState().then(() => {
         // Then determine which page to show
@@ -617,14 +655,14 @@
           showMainContent();
         }
       });
-      
+
       // Add event listeners for navigation
       document.getElementById('navCreateTrivia').addEventListener('click', showCreateTriviaContent);
       document.getElementById('navMyTrivias').addEventListener('click', showMyTriviasContent);
-      
+
       // Setup account dropdown
       setupAccountDropdown();
-      
+
       // Create trivia form listeners
       document.getElementById('createTriviaForm').addEventListener('submit', handleCreateTrivia);
       document.getElementById('cancelCreateTriviaBtn').addEventListener('click', showMainContent);
@@ -636,18 +674,18 @@
           showQuestionEditorContent(createdTriviaId);
         }
       });
-      
+
       // My trivias listeners
       document.getElementById('myTriviasCreateBtn').addEventListener('click', showCreateTriviaContent);
       document.getElementById('myTriviasBackBtn').addEventListener('click', showMainContent);
       document.getElementById('createFirstTriviaBtn').addEventListener('click', showCreateTriviaContent);
-      
+
       // Question editor listeners
       document.getElementById('backToMyTriviasBtn').addEventListener('click', showMyTriviasContent);
       document.getElementById('doneEditingBtn').addEventListener('click', showMainContent);
       document.getElementById('questionForm').addEventListener('submit', handleQuestionSubmit);
       document.getElementById('cancelEditBtn').addEventListener('click', resetQuestionForm);
-      
+
       // Setup option input borders
       setupOptionInputs();
     });
@@ -660,15 +698,15 @@
       if (savedUser && savedToken) {
         user = JSON.parse(savedUser);
         authToken = savedToken;
-        
+
         // Show logged in UI
         document.getElementById('loggedOut').style.display = 'none';
         document.getElementById('loggedInNav').style.display = 'flex';
         document.getElementById('userAccountDropdown').style.display = 'block';
-        
+
         // Update user profile in dropdown
         updateUserDropdownInfo();
-        
+
         // Load user data
         await fetchUserData(user.localId, savedToken);
         return true;
@@ -704,8 +742,8 @@
 
       // Close dropdown when clicking outside
       document.addEventListener('click', (e) => {
-        if (accountDropdownMenu.style.display !== 'none' && 
-            !accountDropdownButton.contains(e.target) && 
+        if (accountDropdownMenu.style.display !== 'none' &&
+            !accountDropdownButton.contains(e.target) &&
             !accountDropdownMenu.contains(e.target)) {
           accountDropdownMenu.style.display = 'none';
         }
@@ -726,21 +764,21 @@
       profilePhotoInput.addEventListener('change', (e) => {
         if (e.target.files && e.target.files[0]) {
           const file = e.target.files[0];
-          
+
           // Check file type
           if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
             showError('Please select a JPEG or PNG image.');
             return;
           }
-          
+
           // Check file size (limit to 2MB)
           if (file.size > 2 * 1024 * 1024) {
             showError('Image size must be less than 2MB.');
             return;
           }
-          
+
           const reader = new FileReader();
-          
+
           reader.onload = function(e) {
             // Display the image
             const profilePhoto = document.getElementById('profilePhoto');
@@ -748,18 +786,18 @@
             profilePhoto.src = e.target.result;
             profilePhoto.style.display = 'block';
             defaultProfileIcon.style.display = 'none';
-            
+
             // Save to localStorage
             localStorage.setItem('profilePhotoData', e.target.result);
-            
+
             // Option: Upload to server/Firebase if needed
             // uploadProfilePhoto(file);
-            
+
             // Close dropdown and show success message
             accountDropdownMenu.style.display = 'none';
             showSuccess('Profile photo updated!');
           };
-          
+
           reader.readAsDataURL(file);
         }
       });
@@ -768,16 +806,16 @@
     // Update user info in the dropdown
     function updateUserDropdownInfo() {
       if (!user) return;
-      
+
       const dropdownUsername = document.getElementById('dropdownUsername');
       const dropdownEmail = document.getElementById('dropdownEmail');
       const defaultProfileIcon = document.getElementById('defaultProfileIcon');
       const profilePhoto = document.getElementById('profilePhoto');
-      
+
       // Set username and email
       dropdownUsername.textContent = user.displayName || 'User';
       dropdownEmail.textContent = user.email || '';
-      
+
       // Set initials for default icon
       if (user.displayName) {
         defaultProfileIcon.textContent = user.displayName.substring(0, 1).toUpperCase();
@@ -786,7 +824,7 @@
       } else {
         defaultProfileIcon.textContent = 'U';
       }
-      
+
       // Check if user has a profile photo
       const savedPhoto = localStorage.getItem('profilePhotoData');
       if (savedPhoto) {
@@ -803,26 +841,26 @@
     function setupOptionInputs() {
       // Get all radio buttons for correct option
       const correctOptions = document.getElementsByName('correctOption');
-      
+
       // Add event listener to each radio button
       correctOptions.forEach(option => {
         option.addEventListener('change', updateOptionBorders);
       });
-      
+
       // Initial setup
       updateOptionBorders();
     }
-    
+
     // Update option borders based on selected correct option
     function updateOptionBorders() {
       const correctOptionValue = document.querySelector('input[name="correctOption"]:checked').value;
-      
+
       // Reset all borders
       for (let i = 1; i <= 4; i++) {
         const option = document.getElementById(`option${i}`);
         option.style.borderColor = 'var(--light-blue)';
       }
-      
+
       // Set green border for correct option
       const correctOption = document.getElementById(`option${parseInt(correctOptionValue) + 1}`);
       correctOption.style.borderColor = 'var(--green)';
@@ -836,7 +874,7 @@
           const data = await response.json();
           if (data) {
             userData = data;
-            
+
             // If username is available, update display name
             if (data.username) {
               user.displayName = data.username;
@@ -856,19 +894,19 @@
       document.getElementById('createTriviaContent').style.display = 'none';
       document.getElementById('myTriviasContent').style.display = 'none';
       document.getElementById('questionEditorContent').style.display = 'none';
-      
+
       // Show main content
       document.getElementById('mainContent').style.display = 'flex';
-      
+
       // Load trivias if not already loaded
       if (allTrivias.length === 0) {
         loadTrivias();
         loadGlobalLeaderboard();
       }
-      
+
       // Update URL without reloading
       history.pushState(null, '', 'index.html');
-      
+
       // Update active nav button
       updateNavButtons();
     }
@@ -879,20 +917,20 @@
         window.location.href = 'login.html?redirect=index.html?page=create-trivia';
         return;
       }
-      
+
       // Hide other content
       document.getElementById('mainContent').style.display = 'none';
       document.getElementById('myTriviasContent').style.display = 'none';
       document.getElementById('questionEditorContent').style.display = 'none';
-      
+
       // Show create trivia form
       document.getElementById('createTriviaContent').style.display = 'block';
       document.getElementById('createTriviaStep1').style.display = 'block';
       document.getElementById('createTriviaStep2').style.display = 'none';
-      
+
       // Update URL without reloading
       history.pushState(null, '', 'index.html?page=create-trivia');
-      
+
       // Update active nav button
       updateNavButtons('create');
     }
@@ -903,21 +941,21 @@
         window.location.href = 'login.html?redirect=index.html?page=my-trivias';
         return;
       }
-      
+
       // Hide other content
       document.getElementById('mainContent').style.display = 'none';
       document.getElementById('createTriviaContent').style.display = 'none';
       document.getElementById('questionEditorContent').style.display = 'none';
-      
+
       // Show my trivias content
       document.getElementById('myTriviasContent').style.display = 'block';
-      
+
       // Load user's trivias
       loadMyTrivias();
-      
+
       // Update URL without reloading
       history.pushState(null, '', 'index.html?page=my-trivias');
-      
+
       // Update active nav button
       updateNavButtons('my-trivias');
     }
@@ -928,21 +966,21 @@
         window.location.href = 'login.html?redirect=index.html?page=edit-questions&id=' + triviaId;
         return;
       }
-      
+
       // Hide other content
       document.getElementById('mainContent').style.display = 'none';
       document.getElementById('createTriviaContent').style.display = 'none';
       document.getElementById('myTriviasContent').style.display = 'none';
-      
+
       // Show question editor content
       document.getElementById('questionEditorContent').style.display = 'block';
-      
+
       // Load trivia details and questions
       loadTriviaForEditing(triviaId);
-      
+
       // Reset the question form
       resetQuestionForm();
-      
+
       // Update URL without reloading
       history.pushState(null, '', 'index.html?page=edit-questions&id=' + triviaId);
     }
@@ -951,16 +989,16 @@
     function updateNavButtons(active = null) {
       const createBtn = document.getElementById('navCreateTrivia');
       const myTriviasBtn = document.getElementById('navMyTrivias');
-      
+
       // Reset both buttons
-      createBtn.className = 'nav-button bg-medium-blue text-cream';
-      myTriviasBtn.className = 'nav-button bg-medium-blue text-cream';
-      
+      createBtn.className = 'nav-link';
+      myTriviasBtn.className = 'nav-link';
+
       // Set active button
       if (active === 'create') {
-        createBtn.className = 'nav-button bg-light-blue text-dark-blue';
+        createBtn.className = 'nav-link active';
       } else if (active === 'my-trivias') {
-        myTriviasBtn.className = 'nav-button bg-light-blue text-dark-blue';
+        myTriviasBtn.className = 'nav-link active';
       }
     }
 
@@ -970,9 +1008,9 @@
         const response = await fetch(`${FIREBASE_DATABASE_URL}/trivias.json`);
         if (response.ok) {
           const data = await response.json();
-          
+
           document.getElementById('loadingText').style.display = 'none';
-          
+
           if (data) {
             // Convert to array
             allTrivias = Object.keys(data).map(key => ({
@@ -986,7 +1024,7 @@
             // Populate dropdown
             const selectElement = document.getElementById('triviaSelect');
             selectElement.innerHTML = '';
-            
+
             allTrivias.forEach(trivia => {
               const option = document.createElement('option');
               option.value = trivia.id;
@@ -995,7 +1033,7 @@
             });
 
             selectElement.style.display = 'block';
-            
+
             // Add change event listener
             selectElement.addEventListener('change', (e) => {
               const selected = allTrivias.find(t => t.id === e.target.value);
@@ -1004,7 +1042,7 @@
                 fetchLeaderboard(selected.id);
               }
             });
-            
+
             // Select first trivia by default
             if (allTrivias.length > 0) {
               selectElement.value = allTrivias[0].id;
@@ -1026,10 +1064,10 @@
     // Display trivia info
     function displayTriviaInfo(trivia) {
       selectedTrivia = trivia;
-      
+
       document.getElementById('triviaTitle').textContent = trivia.title;
       document.getElementById('triviaCreator').textContent = `Created by: ${trivia.created_by}`;
-      
+
       const descElement = document.getElementById('triviaDescription');
       if (trivia.description) {
         descElement.textContent = trivia.description;
@@ -1037,17 +1075,17 @@
       } else {
         descElement.style.display = 'none';
       }
-      
+
       // Show edit button if user is the creator
       const editBtn = document.getElementById('editQuestionsBtn');
-      
+
       if (user && user.localId === trivia.created_by_id) {
         editBtn.style.display = 'inline-block';
         editBtn.onclick = () => showQuestionEditorContent(trivia.id);
       } else {
         editBtn.style.display = 'none';
       }
-      
+
       document.getElementById('selectedTriviaInfo').style.display = 'block';
     }
 
@@ -1056,10 +1094,10 @@
       try {
         const response = await fetch(`${FIREBASE_DATABASE_URL}/leaderboards/${triviaId}.json`);
         const container = document.getElementById('leaderboardContainer');
-        
+
         if (response.ok) {
           const data = await response.json();
-          
+
           if (data) {
             // Convert to array and sort by score
             const leaderboardArray = Object.keys(data).map(key => ({
@@ -1068,7 +1106,7 @@
             }));
 
             leaderboardArray.sort((a, b) => b.score - a.score);
-            
+
             // Render leaderboard
             container.innerHTML = renderLeaderboardHTML(leaderboardArray);
           } else {
@@ -1079,7 +1117,7 @@
         }
       } catch (error) {
         console.error("Error fetching leaderboard:", error);
-        document.getElementById('leaderboardContainer').innerHTML = 
+        document.getElementById('leaderboardContainer').innerHTML =
           '<div class="text-center p-4"><p class="text-lg text-cream">Error loading leaderboard</p></div>';
       }
     }
@@ -1089,10 +1127,10 @@
       try {
         const response = await fetch(`${FIREBASE_DATABASE_URL}/users.json`);
         const container = document.getElementById('globalLeaderboardContainer');
-        
+
         if (response.ok) {
           const data = await response.json();
-          
+
           if (data) {
             // Convert to array and extract needed data
             const usersArray = Object.keys(data).map(key => ({
@@ -1107,7 +1145,7 @@
 
             // Take top 10
             const top10 = usersArray.slice(0, 10);
-            
+
             // Render global leaderboard
             container.innerHTML = renderLeaderboardHTML(top10, true);
           } else {
@@ -1118,7 +1156,7 @@
         }
       } catch (error) {
         console.error("Error fetching global leaderboard:", error);
-        document.getElementById('globalLeaderboardContainer').innerHTML = 
+        document.getElementById('globalLeaderboardContainer').innerHTML =
           '<div class="text-center p-4"><p class="text-lg text-cream">Error loading leaderboard</p></div>';
       }
     }
@@ -1147,7 +1185,7 @@
 
       entries.forEach((entry, index) => {
         const bgColor = index % 2 === 0 ? 'var(--dark-blue)' : 'rgba(29, 45, 68, 0.5)';
-        
+
         html += `
           <tr style="border-bottom: 1px solid var(--medium-blue); background-color: ${bgColor}">
             <td class="px-4 py-3">
@@ -1176,10 +1214,10 @@
     // Handle create trivia form submission
     async function handleCreateTrivia(e) {
       e.preventDefault();
-      
+
       const title = document.getElementById('triviaTitle').value;
       const description = document.getElementById('triviaDescription').value;
-      
+
       if (!user || !authToken) {
         showError('You must be logged in to create a trivia');
         return;
@@ -1236,18 +1274,18 @@
     // Load user's trivias
     async function loadMyTrivias() {
       if (!user) return;
-      
+
       try {
         document.getElementById('loadingMyTrivias').style.display = 'block';
         document.getElementById('noTriviasYet').style.display = 'none';
         document.getElementById('myTriviasList').innerHTML = '<p id="loadingMyTrivias" class="text-cream">Loading your trivias...</p>';
-        
+
         const response = await fetch(`${FIREBASE_DATABASE_URL}/trivias.json`);
         if (response.ok) {
           const data = await response.json();
-          
+
           document.getElementById('loadingMyTrivias').style.display = 'none';
-          
+
           if (data) {
             const triviasList = Object.keys(data)
               .filter(key => data[key].created_by_id === user.localId)
@@ -1258,9 +1296,9 @@
 
             // Sort by most recently created
             triviasList.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
-            
+
             myTrivias = triviasList;
-            
+
             if (triviasList.length === 0) {
               document.getElementById('noTriviasYet').style.display = 'block';
             } else {
@@ -1281,7 +1319,7 @@
     function renderMyTrivias(trivias) {
       const container = document.getElementById('myTriviasList');
       container.innerHTML = '';
-      
+
       trivias.forEach(trivia => {
         const triviaEl = document.createElement('div');
         triviaEl.className = 'p-4 rounded-lg bg-medium-blue';
@@ -1306,10 +1344,10 @@
             </div>
           </div>
         `;
-        
+
         container.appendChild(triviaEl);
       });
-      
+
       // Add event listeners to edit buttons
       document.querySelectorAll('.edit-questions-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1328,7 +1366,7 @@
           const triviaData = await triviaResponse.json();
           if (triviaData) {
             document.getElementById('editingTriviaTitle').textContent = triviaData.title;
-            
+
             // Check if user is the creator
             if (!user || user.localId !== triviaData.created_by_id) {
               showError("You don't have permission to edit this trivia");
@@ -1337,7 +1375,7 @@
             }
           }
         }
-        
+
         // Get questions
         await fetchQuestionsForTrivia(triviaId);
       } catch (error) {
@@ -1361,10 +1399,10 @@
 
             // Update question count
             document.getElementById('questionCount').textContent = currentQuestions.length;
-            
+
             // Display questions
             renderQuestionsList();
-            
+
             return currentQuestions;
           } else {
             currentQuestions = [];
@@ -1388,18 +1426,18 @@
     function renderQuestionsList() {
       const container = document.getElementById('questionsList');
       container.innerHTML = '';
-      
+
       if (currentQuestions.length === 0) {
         document.getElementById('questionsListEmpty').style.display = 'block';
         return;
       }
-      
+
       document.getElementById('questionsListEmpty').style.display = 'none';
-      
+
       currentQuestions.forEach((question, index) => {
         const questionEl = document.createElement('div');
         questionEl.className = 'mb-3 p-3 rounded-lg bg-medium-blue';
-        
+
         questionEl.innerHTML = `
           <div class="flex justify-between">
             <div class="font-bold text-cream">
@@ -1435,10 +1473,10 @@
             </div>
           </div>
         `;
-        
+
         container.appendChild(questionEl);
       });
-      
+
       // Add event listeners to buttons
       document.querySelectorAll('.edit-question-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1446,7 +1484,7 @@
           editQuestion(index);
         });
       });
-      
+
       document.querySelectorAll('.delete-question-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const index = parseInt(btn.getAttribute('data-index'));
@@ -1491,26 +1529,26 @@
     // Handle question form submission
     async function handleQuestionSubmit(e) {
       e.preventDefault();
-      
+
       if (!user || !authToken) {
         showError('You must be logged in to add questions');
         return;
       }
-      
+
       const questionText = document.getElementById('questionText').value;
       const option1 = document.getElementById('option1').value;
       const option2 = document.getElementById('option2').value;
       const option3 = document.getElementById('option3').value;
       const option4 = document.getElementById('option4').value;
       const correctOption = parseInt(document.querySelector('input[name="correctOption"]:checked').value);
-      
+
       if (!questionText || !option1 || !option2 || !option3 || !option4) {
         showError('All fields are required');
         return;
       }
-      
+
       const options = [option1, option2, option3, option4];
-      
+
       try {
         if (isEditingQuestion && selectedQuestionIndex !== null) {
           // Update existing question
@@ -1536,7 +1574,7 @@
               options,
               correct: correctOption
             };
-            
+
             showSuccess('Question updated successfully!');
             resetQuestionForm();
             renderQuestionsList();
@@ -1570,7 +1608,7 @@
 
             // Update question count in trivia
             await updateQuestionCount(editingTriviaId, currentQuestions.length);
-            
+
             document.getElementById('questionCount').textContent = currentQuestions.length;
             showSuccess('Question added successfully!');
             resetQuestionForm();
@@ -1604,7 +1642,7 @@
 
           // Update question count in trivia
           await updateQuestionCount(editingTriviaId, currentQuestions.length);
-          
+
           document.getElementById('questionCount').textContent = currentQuestions.length;
           showSuccess('Question deleted successfully!');
 
@@ -1615,7 +1653,7 @@
             // Adjust selected index if we deleted a question before it
             selectedQuestionIndex--;
           }
-          
+
           renderQuestionsList();
         } else {
           showError('Failed to delete question');
@@ -1638,7 +1676,7 @@
             question_count: count
           })
         });
-        
+
         if (response.ok) {
           // Update counts in local trivia lists
           if (allTrivias.length > 0) {
@@ -1647,7 +1685,7 @@
               trivia.question_count = count;
             }
           }
-          
+
           if (myTrivias.length > 0) {
             const trivia = myTrivias.find(t => t.id === triviaId);
             if (trivia) {
@@ -1667,22 +1705,22 @@
       localStorage.removeItem('triviaToken');
       // Don't remove profile photo - it can be kept for next login
       //localStorage.removeItem('profilePhotoData');
-      
+
       user = null;
       userData = null;
       authToken = null;
-      
+
       // Show success message
       showSuccess('Signed out successfully!');
-      
+
       // Update UI
       document.getElementById('loggedOut').style.display = 'flex';
       document.getElementById('loggedInNav').style.display = 'none';
       document.getElementById('userAccountDropdown').style.display = 'none';
-      
+
       // Go back to main content
       showMainContent();
-      
+
       // Hide edit buttons
       if (selectedTrivia) {
         document.getElementById('editQuestionsBtn').style.display = 'none';
@@ -1694,7 +1732,7 @@
       const errorMsg = document.getElementById('errorMessage');
       errorMsg.textContent = message;
       errorMsg.style.display = 'block';
-      
+
       setTimeout(() => {
         errorMsg.style.display = 'none';
       }, 5000);
@@ -1705,7 +1743,7 @@
       const successMsg = document.getElementById('successMessage');
       successMsg.textContent = message;
       successMsg.style.display = 'block';
-      
+
       setTimeout(() => {
         successMsg.style.display = 'none';
       }, 3000);
