@@ -33,21 +33,48 @@
 
     .text-cream { color: var(--cream); }
     .text-light-blue { color: var(--light-blue); }
+
+    /* Loading spinner animation */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .animate-spin {
+      animation: spin 1s linear infinite;
+    }
+
+    /* Fade-in animation for text */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animated {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
   </style>
 </head>
 <body class="bg-dark-bg">
   <div class="flex justify-center items-center min-h-screen p-6">
-    <div class="text-center p-8 rounded-lg bg-dark-blue max-w-md w-full">
+    <div class="text-center p-8 rounded-lg bg-dark-blue max-w-md w-full animated">
       <h2 id="statusTitle" class="text-2xl mb-4 text-cream">Processing authentication...</h2>
 
       <!-- Loading spinner -->
       <div id="loadingSpinner" class="w-16 h-16 mx-auto border-4 border-t-light-blue border-r-light-blue border-b-light-blue border-l-transparent rounded-full animate-spin"></div>
 
+      <!-- Profile photo preview (shown when auth is successful) -->
+      <div id="profilePhotoPreview" class="w-24 h-24 mx-auto rounded-full border-4 border-light-blue overflow-hidden mt-4 mb-4 bg-medium-blue flex items-center justify-center" style="display: none;">
+        <span id="defaultProfileIcon" class="text-cream text-3xl font-semibold">U</span>
+        <img id="profilePhotoImg" class="w-full h-full object-cover" style="display: none;" />
+      </div>
+
       <!-- Error message -->
       <p id="errorMessage" class="text-cream mt-4" style="display: none;"></p>
+      <p id="successMessage" class="text-cream mt-4" style="display: none;">Authentication successful! Redirecting...</p>
 
       <div id="buttonContainer" class="mt-6" style="display: none;">
-        <a href="login.html" class="px-4 py-2 rounded-lg inline-block bg-medium-blue text-cream no-underline">
+        <a href="login.html" class="px-4 py-2 rounded-lg inline-block bg-medium-blue text-cream no-underline transition-transform hover:transform hover:scale-105 active:transform active:scale-95">
           Return to Login
         </a>
       </div>
@@ -101,6 +128,23 @@
           return;
         }
 
+        // Try to get profile picture from Google
+        let profileImageUrl = null;
+        if (userInfo.picture) {
+          try {
+            // Fetch the image and convert to base64
+            const imageResponse = await fetch(userInfo.picture);
+            const blob = await imageResponse.blob();
+            profileImageUrl = await blobToBase64(blob);
+
+            // Show profile image in the UI
+            showProfileImage(profileImageUrl, userInfo.name || userInfo.email);
+          } catch (error) {
+            console.error("Error getting profile picture:", error);
+            // Continue without profile picture
+          }
+        }
+
         // Use Firebase Auth REST API to sign in with Google
         const authResponse = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${FIREBASE_API_KEY}`, {
           method: 'POST',
@@ -130,6 +174,11 @@
 
         localStorage.setItem('triviaUser', JSON.stringify(currentUser));
         localStorage.setItem('triviaToken', authData.idToken);
+
+        // Save profile photo if we got one
+        if (profileImageUrl) {
+          localStorage.setItem('profilePhotoData', profileImageUrl);
+        }
 
         // Check if user exists in our database
         const userRef = await fetch(`${FIREBASE_DATABASE_URL}/users/${authData.localId}.json`);
@@ -163,17 +212,47 @@
 
         // Update status and redirect
         document.getElementById('statusTitle').textContent = "Authentication successful!";
-        document.getElementById('loadingSpinner').style.borderLeftColor = 'var(--light-blue)';
+        document.getElementById('loadingSpinner').style.display = 'none';
+        document.getElementById('successMessage').style.display = 'block';
 
         // Redirect after a short delay
         setTimeout(() => {
           window.location.href = redirectTo;
-        }, 1000);
+        }, 2000);
 
       } catch (error) {
         console.error("Error processing OAuth callback:", error);
         showError("An error occurred during authentication. Please try again.");
       }
+    }
+
+    // Show profile image
+    function showProfileImage(imageUrl, name) {
+      const profilePreview = document.getElementById('profilePhotoPreview');
+      const profileImg = document.getElementById('profilePhotoImg');
+      const defaultIcon = document.getElementById('defaultProfileIcon');
+
+      profilePreview.style.display = 'flex';
+
+      if (imageUrl) {
+        profileImg.src = imageUrl;
+        profileImg.style.display = 'block';
+        defaultIcon.style.display = 'none';
+      } else {
+        profileImg.style.display = 'none';
+        defaultIcon.style.display = 'block';
+        defaultIcon.textContent = name.charAt(0).toUpperCase();
+      }
+    }
+
+    // Convert blob to base64
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
     }
 
     // Show error message
