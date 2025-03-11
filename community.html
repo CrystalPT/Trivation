@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community - Triviation</title>
+
+  <!-- Tailwind CSS for styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Define color variables */
+    :root {
+      --dark-bg: #0d1321;
+      --dark-blue: #1d2d44;
+      --medium-blue: #3e5c76;
+      --light-blue: #748cab;
+      --cream: #f0ebd8;
+      --white: #ffffff;
+      --black: #000000;
+      --gray: #c8c8c8;
+      --red: #ff5050;
+      --green: #50c878;
+    }
+
+    /* Apply colors with CSS variables */
+    .bg-dark-bg { background-color: var(--dark-bg); }
+    .bg-dark-blue { background-color: var(--dark-blue); }
+    .bg-medium-blue { background-color: var(--medium-blue); }
+    .bg-light-blue { background-color: var(--light-blue); }
+    .bg-cream { background-color: var(--cream); }
+    .bg-red { background-color: var(--red); }
+    .bg-green { background-color: var(--green); }
+
+    .text-cream { color: var(--cream); }
+    .text-light-blue { color: var(--light-blue); }
+    .text-dark-blue { color: var(--dark-blue); }
+    .text-white { color: var(--white); }
+    .text-dark-bg { color: var(--dark-bg); }
+    .text-red { color: var(--red); }
+
+    .border-light-blue { border-color: var(--light-blue); }
+    .border-medium-blue { border-color: var(--medium-blue); }
+    .border-gray { border-color: var(--gray); }
+    .border-green { border-color: var(--green); }
+
+    /* Consistent button styling for better alignment */
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 1rem;
+      height: 40px;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background-color 0.2s, transform 0.1s;
+      white-space: nowrap;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Button hover effect */
+    .nav-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Button click effect */
+    .nav-button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    /* Dropdown menu item styling */
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+      color: var(--cream);
+      transition: background-color 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--medium-blue);
+      color: white;
+    }
+
+    .dropdown-item:active {
+      transform: scale(0.98);
+    }
+
+    /* Profile photo container animation */
+    #accountDropdownButton {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    #accountDropdownButton:hover {
+      transform: scale(1.05);
+    }
+
+    #accountDropdownButton:active {
+      transform: scale(0.95);
+    }
+
+    /* Animation for dropdown menu */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #accountDropdownMenu.animated {
+      animation: fadeIn 0.2s ease-out forwards;
+    }
+
+    /* Animation for post loading */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-up {
+      animation: fadeUp 0.3s ease-out forwards;
+    }
+
+    /* New navigation style with underline effect */
+    .nav-link {
+      position: relative;
+      padding: 0.5rem 1.5rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      color: var(--cream);
+      text-decoration: none;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 3px;
+      bottom: -5px;
+      left: 0;
+      background-color: var(--light-blue);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+    /* Search input styles */
+    .search-input {
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .search-input:focus {
+      border-color: var(--light-blue);
+      box-shadow: 0 0 0 3px rgba(116, 140, 171, 0.3);
+      outline: none;
+    }
+
+    /* Post cards hover effect */
+    .post-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .post-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Radio buttons style */
+    .radio-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .radio-button {
+      display: none;
+    }
+
+    .radio-label {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      border: 2px solid var(--light-blue);
+      color: var(--cream);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .radio-button:checked + .radio-label {
+      background-color: var(--light-blue);
+      color: var(--dark-blue);
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body class="bg-dark-bg">
+  <div class="min-h-screen p-6">
+    <!-- Header -->
+    <header class="mb-8 p-4 rounded-lg bg-dark-blue">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center mb-4 md:mb-0">
+          <a href="index.html" class="text-4xl font-bold text-cream no-underline">
+            TRIVIATION
+          </a>
+          <a
+            href="https://github.com/CrystalPT/Trivation/releases"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="nav-link ml-4"
+          >
+            Downloads
+          </a>
+        </div>
+
+        <!-- Navigation buttons with new style -->
+        <div class="flex items-center gap-3 mb-4 md:mb-0">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="community.html" class="nav-link active">Community</a>
+
+          <!-- These links will only be shown when logged in -->
+          <div id="loggedInNav" class="flex items-center gap-3" style="display: none;">
+            <button
+              id="navCreateTrivia"
+              class="nav-link">
+              Create Trivia
+            </button>
+            <button
+              id="navMyTrivias"
+              class="nav-link">
+              My Trivias
+            </button>
+          </div>
+        </div>
+
+        <!-- User controls -->
+        <div class="flex items-center">
+          <div id="loggedOut" class="flex items-center gap-3">
+            <a href="login.html" class="nav-button bg-medium-blue text-cream no-underline">
+              Sign In
+            </a>
+            <a href="login.html?page=signup" class="nav-button bg-green text-white no-underline">
+              Sign Up
+            </a>
+          </div>
+
+          <!-- Account Dropdown -->
+          <div id="userAccountDropdown" class="relative" style="display: none;">
+            <button id="accountDropdownButton" class="flex items-center gap-2 rounded-full focus:outline-none">
+              <div id="profilePhotoContainer" class="w-10 h-10 rounded-full overflow-hidden border-2 border-light-blue flex items-center justify-center bg-medium-blue">
+                <!-- Default profile icon if no image is set -->
+                <span id="defaultProfileIcon" class="text-cream text-lg font-semibold"></span>
+                <!-- Profile image will be loaded here if available -->
+                <img id="profilePhoto" src="" alt="Profile" class="w-full h-full object-cover" style="display: none;">
+              </div>
+            </button>
+
+            <!-- Dropdown menu -->
+            <div id="accountDropdownMenu" class="absolute right-0 mt-2 w-48 bg-dark-blue border border-light-blue rounded-lg shadow-lg z-50" style="display: none;">
+              <div class="p-3 border-b border-medium-blue">
+                <p id="dropdownUsername" class="font-semibold text-cream truncate"></p>
+                <p id="dropdownEmail" class="text-sm text-light-blue truncate"></p>
+              </div>
+              <ul class="py-1">
+                <li>
+                  <a href="account.html" class="dropdown-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Profile settings
+                  </a>
+                </li>
+                <li>
+                  <a href="friends.html" class="dropdown-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Friends
+                  </a>
+                </li>
+                <li>
+                  <button id="dropdownSignOutBtn" class="dropdown-item text-red w-full text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Sign out
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Messages -->
+    <div id="errorMessage" class="mb-4 p-3 rounded-lg bg-red text-white" style="display: none;"></div>
+    <div id="successMessage" class="mb-4 p-3 rounded-lg bg-green text-white" style="display: none;"></div>
+
+    <!-- Community Content -->
+    <div class="mb-8">
+      <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Main Content Column -->
+        <div class="lg:w-2/3">
+          <!-- Search and Filters Section -->
+          <div class="mb-6 p-6 rounded-lg bg-dark-blue">
+            <h2 class="text-2xl mb-4 text-cream">Community Posts</h2>
+
+            <!-- Search Bar -->
+            <div class="relative mb-4">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search community posts..."
+                class="w-full p-3 pr-10 rounded-lg border border-light-blue bg-dark-bg text-cream search-input"
+              />
+              <button id="searchButton" class="absolute right-3 top-3 text-light-blue">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Search Filters -->
+            <div class="radio-container mb-4">
+              <input type="radio" id="searchAll" name="searchFilter" value="all" class="radio-button" checked />
+              <label for="searchAll" class="radio-label">All</label>
+
+              <input type="radio" id="searchUser" name="searchFilter" value="user" class="radio-button" />
+              <label for="searchUser" class="radio-label">Search For User</label>
+
+              <input type="radio" id="searchTitle" name="searchFilter" value="title" class="radio-button" />
+              <label for="searchTitle" class="radio-label">Search For Title</label>
+
+              <input type="radio" id="searchKeyword" name="searchFilter" value="keyword" class="radio-button" />
+              <label for="searchKeyword" class="radio-label">Search For Keyword</label>
+            </div>
+
+            <!-- Create New Post Button (for logged-in users) -->
+            <div id="createPostButtonContainer" style="display: none;">
+              <button id="createPostButton" class="nav-button bg-green text-white w-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Create New Post
+              </button>
+            </div>
+
+            <!-- Login Prompt (for logged-out users) -->
+            <div id="loginPromptContainer" class="text-center p-3 bg-medium-blue rounded-lg">
+              <p class="text-cream mb-2">Sign in to create posts and join the community!</p>
+              <a href="login.html" class="nav-button bg-light-blue text-dark-blue inline-block no-underline">Sign In</a>
+            </div>
+          </div>
+
+          <!-- Posts List -->
+          <div id="postsContainer" class="space-y-4">
+            <!-- Posts will be loaded here -->
+            <div id="loadingPosts" class="text-center p-4">
+              <p class="text-light-blue">Loading community posts...</p>
+            </div>
+
+            <div id="noPosts" class="text-center p-6 bg-dark-blue rounded-lg" style="display: none;">
+              <p class="text-light-blue mb-3">No posts found.</p>
+              <p class="text-cream">Be the first to share your experience with Triviation!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="lg:w-1/3">
+          <!-- Most Active Users -->
+          <div class="p-6 mb-6 rounded-lg bg-dark-blue">
+            <h3 class="text-xl mb-4 text-cream">Most Active Users</h3>
+            <div id="activeUsersContainer">
+              <div class="mb-2 py-2 border-b border-medium-blue">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 rounded-full bg-medium-blue text-cream flex items-center justify-center font-bold">J</div>
+                  <div class="ml-2">
+                    <p class="text-cream">JohnDoe</p>
+                    <p class="text-xs text-light-blue">12 posts</p>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-2 py-2 border-b border-medium-blue">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 rounded-full bg-medium-blue text-cream flex items-center justify-center font-bold">M</div>
+                  <div class="ml-2">
+                    <p class="text-cream">MarySmith</p>
+                    <p class="text-xs text-light-blue">8 posts</p>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-2 py-2">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 rounded-full bg-medium-blue text-cream flex items-center justify-center font-bold">T</div>
+                  <div class="ml-2">
+                    <p class="text-cream">TriviaFan42</p>
+                    <p class="text-xs text-light-blue">5 posts</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trending Topics -->
+          <div class="p-6 mb-6 rounded-lg bg-dark-blue">
+            <h3 class="text-xl mb-4 text-cream">Trending Topics</h3>
+            <div class="flex flex-wrap gap-2">
+              <span class="px-3 py-1 bg-medium-blue text-cream rounded-full text-sm">#GameTips</span>
+              <span class="px-3 py-1 bg-medium-blue text-cream rounded-full text-sm">#TriviaChallenge</span>
+              <span class="px-3 py-1 bg-medium-blue text-cream rounded-full text-sm">#Feedback</span>
+              <span class="px-3 py-1 bg-medium-blue text-cream rounded-full text-sm">#BugReports</span>
+              <span class="px-3 py-1 bg-medium-blue text-cream rounded-full text-sm">#Suggestions</span>
+            </div>
+          </div>
+
+          <!-- Community Guidelines -->
+          <div class="p-6 rounded-lg bg-dark-blue">
+            <h3 class="text-xl mb-4 text-cream">Community Guidelines</h3>
+            <ul class="text-cream space-y-2">
+              <li class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-light-blue mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Be respectful to other community members
+              </li>
+              <li class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-light-blue mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                No inappropriate content or language
+              </li>
+              <li class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-light-blue mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Stay on topic and contribute constructively
+              </li>
+              <li class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-light-blue mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Report posts that violate guidelines
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Post Modal -->
+    <div id="createPostModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
+      <div class="bg-dark-blue p-6 rounded-lg w-full max-w-2xl mx-4">
+        <h3 class="text-xl mb-4 text-cream">Create New Post</h3>
+
+        <form id="createPostForm">
+          <div class="mb-4">
+            <label class="block mb-2 text-light-blue">Post Title</label>
+            <input type="text" id="postTitle" class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue search-input" required>
+          </div>
+
+          <div class="mb-4">
+            <label class="block mb-2 text-light-blue">Content</label>
+            <textarea id="postContent" class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue search-input" rows="5" required></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label class="block mb-2 text-light-blue">Add Image (Optional)</label>
+            <input type="file" id="postImage" accept="image/*" class="w-full p-2 rounded-lg bg-dark-bg text-cream">
+            <div id="imagePreviewContainer" class="mt-2" style="display: none;">
+              <img id="imagePreview" class="h-40 object-contain" src="" alt="Image Preview">
+            </div>
+          </div>
+
+          <div class="flex gap-3 justify-end">
+            <button type="button" id="cancelPostBtn" class="nav-button bg-medium-blue text-cream">Cancel</button>
+            <button type="submit" class="nav-button bg-green text-white">Post</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Firebase configuration
+    const FIREBASE_API_KEY = "AIzaSyDIgbZvfYb2kxazfrZcrddAVEZ7tVdWvhA";
+    const FIREBASE_DATABASE_URL = "https://trivia-20b98-default-rtdb.europe-west1.firebasedatabase.app";
+
+    // Global state
+    let user = null;
+    let userData = null;
+    let authToken = null;
+    let communityPosts = [];
+    let filteredPosts = [];
+
+    // Initialization on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check authentication state
+      checkAuthState();
+
+      // Load community posts
+      loadCommunityPosts();
+
+      // Setup event listeners
+      setupEventListeners();
+    });
+
+    // Check authentication state
+    async function checkAuthState() {
+      const savedUser = localStorage.getItem('triviaUser');
+      const savedToken = localStorage.getItem('triviaToken');
+
+      if (savedUser && savedToken) {
+        user = JSON.parse(savedUser);
+        authToken = savedToken;
+
+        // Show logged in UI
+        document.getElementById('loggedOut').style.display = 'none';
+        document.getElementById('loggedInNav').style.display = 'flex';
+        document.getElementById('userAccountDropdown').style.display = 'block';
+        document.getElementById('createPostButtonContainer').style.display = 'block';
+        document.getElementById('loginPromptContainer').style.display = 'none';
+
+        // Update user profile in dropdown
+        updateUserDropdownInfo();
+
+        // Load user data
+        await fetchUserData(user.localId, savedToken);
+      } else {
+        // Show logged out UI
+        document.getElementById('loggedOut').style.display = 'flex';
+        document.getElementById('loggedInNav').style.display = 'none';
+        document.getElementById('userAccountDropdown').style.display = 'none';
+        document.getElementById('createPostButtonContainer').style.display = 'none';
+        document.getElementById('loginPromptContainer').style.display = 'block';
+      }
+    }
+
+    // Update user info in the dropdown
+    function updateUserDropdownInfo() {
+      if (!user) return;
+
+      const dropdownUsername = document.getElementById('dropdownUsername');
+      const dropdownEmail = document.getElementById('dropdownEmail');
+      const defaultProfileIcon = document.getElementById('defaultProfileIcon');
+      const profilePhoto = document.getElementById('profilePhoto');
+
+      // Set username and email
+      dropdownUsername.textContent = user.displayName || 'User';
+      dropdownEmail.textContent = user.email || '';
+
+      // Set initials for default icon
+      if (user.displayName) {
+        defaultProfileIcon.textContent = user.displayName.substring(0, 1).toUpperCase();
+      } else if (user.email) {
+        defaultProfileIcon.textContent = user.email.substring(0, 1).toUpperCase();
+      } else {
+        defaultProfileIcon.textContent = 'U';
+      }
+
+      // Check if user has a profile photo
+      const savedPhoto = localStorage.getItem('profilePhotoData');
+      if (savedPhoto) {
+        profilePhoto.src = savedPhoto;
+        profilePhoto.style.display = 'block';
+        defaultProfileIcon.style.display = 'none';
+      } else {
+        profilePhoto.style.display = 'none';
+        defaultProfileIcon.style.display = 'block';
+      }
+    }
+
+    // Setup Account Dropdown
+    function setupAccountDropdown() {
+      // Elements
+      const accountDropdownButton = document.getElementById('accountDropdownButton');
+      const accountDropdownMenu = document.getElementById('accountDropdownMenu');
+      const dropdownSignOutBtn = document.getElementById('dropdownSignOutBtn');
+
+      // Toggle dropdown when clicking the button
+      accountDropdownButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (accountDropdownMenu.style.display === 'none') {
+          accountDropdownMenu.style.display = 'block';
+          // Add animation class
+          accountDropdownMenu.classList.add('animated');
+        } else {
+          accountDropdownMenu.style.display = 'none';
+        }
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (accountDropdownMenu.style.display !== 'none' &&
+            !accountDropdownButton.contains(e.target) &&
+            !accountDropdownMenu.contains(e.target)) {
+          accountDropdownMenu.style.display = 'none';
+        }
+      });
+
+      // Sign out functionality
+      if (dropdownSignOutBtn) {
+        dropdownSignOutBtn.addEventListener('click', () => {
+          handleSignOut();
+        });
+      }
+    }
+
+    // Fetch user data from Firebase
+    async function fetchUserData(userId, token) {
+      try {
+        const response = await fetch(`${FIREBASE_DATABASE_URL}/users/${userId}.json?auth=${token}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data) {
+            userData = data;
+
+            // If username is available, update display name
+            if (data.username) {
+              user.displayName = data.username;
+              localStorage.setItem('triviaUser', JSON.stringify(user));
+              updateUserDropdownInfo();
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+
+    // Load community posts
+    async function loadCommunityPosts() {
+      const postsContainer = document.getElementById('postsContainer');
+      const loadingPosts = document.getElementById('loadingPosts');
+      const noPosts = document.getElementById('noPosts');
+
+      try {
+        // For the demo, we'll use mock data
+        // In a real application, you would fetch from Firebase
+
+        // Simulate API call delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Mock data
+        communityPosts = [
+          {
+            id: 'post1',
+            title: 'Just beat my high score!',
+            content: 'Finally managed to answer 20 questions correctly in a row! This game is so addictive. Has anyone else reached this milestone?',
+            authorId: 'user1',
+            authorName: 'JohnDoe',
+            timestamp: Date.now() - 3600000, // 1 hour ago
+            likes: 15,
+            comments: 3,
+            hasImage: false
+          },
+          {
+            id: 'post2',
+            title: 'Feature request: Dark mode',
+            content: 'Would love to see a dark mode option in the next update. It would be easier on the eyes for night gaming sessions!',
+            authorId: 'user2',
+            authorName: 'MarySmith',
+            timestamp: Date.now() - 86400000, // 1 day ago
+            likes: 42,
+            comments: 7,
+            hasImage: false
+          },
+          {
+            id: 'post3',
+            title: 'Check out my Triviation setup!',
+            content: 'Playing Triviation with friends over the weekend. We had a blast! Highly recommend for game nights.',
+            authorId: 'user3',
+            authorName: 'TriviaFan42',
+            timestamp: Date.now() - 172800000, // 2 days ago
+            likes: 28,
+            comments: 5,
+            hasImage: true,
+            imageUrl: 'https://via.placeholder.com/800x450?text=Game+Night+with+Triviation'
+          },
+          {
+            id: 'post4',
+            title: 'Bug report: Score not updating',
+            content: 'Having an issue where sometimes my score doesn\'t update after answering correctly. Anyone else experiencing this? Using app version 1.2.3',
+            authorId: 'user4',
+            authorName: 'BugHunter',
+            timestamp: Date.now() - 259200000, // 3 days ago
+            likes: 5,
+            comments: 12,
+            hasImage: false
+          },
+          {
+            id: 'post5',
+            title: 'New to Triviation - Any tips?',
+            content: 'Just downloaded the app yesterday and loving it so far! Any pro tips for beginners? What categories are the most fun?',
+            authorId: 'user5',
+            authorName: 'NewbieTriviaPlayer',
+            timestamp: Date.now() - 345600000, // 4 days ago
+            likes: 10,
+            comments: 15,
+            hasImage: false
+          }
+        ];
+
+        // Hide loading indicator
+        loadingPosts.style.display = 'none';
+
+        // Check if we have posts
+        if (communityPosts.length > 0) {
+          noPosts.style.display = 'none';
+          renderPosts(communityPosts);
+        } else {
+          noPosts.style.display = 'block';
+        }
+      } catch (error) {
+        console.error("Error loading community posts:", error);
+        loadingPosts.style.display = 'none';
+        noPosts.innerHTML = '<p class="text-red">Error loading posts. Please try again later.</p>';
+        noPosts.style.display = 'block';
+      }
+    }
+
+    // Render posts to the posts container
+    function renderPosts(posts) {
+      const postsContainer = document.getElementById('postsContainer');
+      postsContainer.innerHTML = '';
+
+      posts.forEach(post => {
+        const postElement = createPostElement(post);
+        postsContainer.appendChild(postElement);
+      });
+    }
+
+    // Create a post element
+    function createPostElement(post) {
+      const postCard = document.createElement('div');
+      postCard.className = 'post-card bg-dark-blue rounded-lg overflow-hidden fade-up';
+      postCard.setAttribute('data-post-id', post.id);
+
+      // Format the timestamp
+      const timeAgo = formatTimeAgo(post.timestamp);
+
+      // Create post HTML
+      postCard.innerHTML = `
+        <div class="p-4">
+          <div class="flex items-center mb-3">
+            <div class="w-10 h-10 rounded-full bg-medium-blue text-cream flex items-center justify-center font-bold">
+              ${post.authorName.charAt(0).toUpperCase()}
+            </div>
+            <div class="ml-2">
+              <p class="text-cream font-semibold">${post.authorName}</p>
+              <p class="text-xs text-light-blue">${timeAgo}</p>
+            </div>
+          </div>
+
+          <h3 class="text-xl text-cream font-bold mb-2">${post.title}</h3>
+          <p class="text-cream mb-3">${post.content}</p>
+
+          ${post.hasImage ? `
+            <div class="mb-3 rounded-lg overflow-hidden">
+              <img src="${post.imageUrl}" alt="Post image" class="w-full h-auto">
+            </div>
+          ` : ''}
+
+          <div class="flex items-center justify-between border-t border-medium-blue pt-3">
+            <div class="flex items-center gap-4">
+              <button class="like-button flex items-center text-light-blue hover:text-cream">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                <span>${post.likes}</span>
+              </button>
+
+              <button class="comment-button flex items-center text-light-blue hover:text-cream">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <span>${post.comments}</span>
+              </button>
+            </div>
+
+            <button class="share-button text-light-blue hover:text-cream">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Add event listeners to the buttons
+      const likeButton = postCard.querySelector('.like-button');
+      const commentButton = postCard.querySelector('.comment-button');
+      const shareButton = postCard.querySelector('.share-button');
+
+      likeButton.addEventListener('click', () => handleLikeClick(post.id));
+      commentButton.addEventListener('click', () => handleCommentClick(post.id));
+      shareButton.addEventListener('click', () => handleShareClick(post.id));
+
+      return postCard;
+    }
+
+    // Format timestamp to "time ago" format
+    function formatTimeAgo(timestamp) {
+      const now = Date.now();
+      const diff = now - timestamp;
+
+      // Convert to seconds
+      const seconds = Math.floor(diff / 1000);
+
+      if (seconds < 60) {
+        return 'just now';
+      }
+
+      // Convert to minutes
+      const minutes = Math.floor(seconds / 60);
+
+      if (minutes < 60) {
+        return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
+      }
+
+      // Convert to hours
+      const hours = Math.floor(minutes / 60);
+
+      if (hours < 24) {
+        return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
+      }
+
+      // Convert to days
+      const days = Math.floor(hours / 24);
+
+      if (days < 30) {
+        return `${days} ${days === 1 ? 'day' : 'days'} ago`;
+      }
+
+      // Convert to months
+      const months = Math.floor(days / 30);
+
+      if (months < 12) {
+        return `${months} ${months === 1 ? 'month' : 'months'} ago`;
+      }
+
+      // Convert to years
+      const years = Math.floor(months / 12);
+
+      return `${years} ${years === 1 ? 'year' : 'years'} ago`;
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Setup account dropdown
+      setupAccountDropdown();
+
+      // Search functionality
+      const searchInput = document.getElementById('searchInput');
+      const searchButton = document.getElementById('searchButton');
+
+      searchButton.addEventListener('click', () => {
+        searchPosts(searchInput.value);
+      });
+
+      searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          searchPosts(searchInput.value);
+        }
+      });
+
+      // Filter radio buttons
+      const radioButtons = document.querySelectorAll('input[name="searchFilter"]');
+      radioButtons.forEach(radio => {
+        radio.addEventListener('change', () => {
+          if (searchInput.value.trim() !== '') {
+            searchPosts(searchInput.value);
+          }
+        });
+      });
+
+      // Create post button
+      const createPostButton = document.getElementById('createPostButton');
+      const cancelPostBtn = document.getElementById('cancelPostBtn');
+      const createPostModal = document.getElementById('createPostModal');
+      const createPostForm = document.getElementById('createPostForm');
+
+      if (createPostButton) {
+        createPostButton.addEventListener('click', () => {
+          createPostModal.style.display = 'flex';
+        });
+      }
+
+      cancelPostBtn.addEventListener('click', () => {
+        createPostModal.style.display = 'none';
+        createPostForm.reset();
+        document.getElementById('imagePreviewContainer').style.display = 'none';
+      });
+
+      // Handle image preview
+      const postImage = document.getElementById('postImage');
+      const imagePreview = document.getElementById('imagePreview');
+      const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+
+      postImage.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          const reader = new FileReader();
+
+          reader.onload = (e) => {
+            imagePreview.src = e.target.result;
+            imagePreviewContainer.style.display = 'block';
+          };
+
+          reader.readAsDataURL(e.target.files[0]);
+        } else {
+          imagePreviewContainer.style.display = 'none';
+        }
+      });
+
+      // Form submission
+      createPostForm.addEventListener('submit', handleCreatePost);
+    }
+
+    // Search posts
+    function searchPosts(query) {
+      if (!query || query.trim() === '') {
+        renderPosts(communityPosts);
+        return;
+      }
+
+      query = query.toLowerCase().trim();
+
+      // Get the selected filter
+      const filter = document.querySelector('input[name="searchFilter"]:checked').value;
+
+      // Filter posts based on the query and selected filter
+      switch (filter) {
+        case 'user':
+          filteredPosts = communityPosts.filter(post =>
+            post.authorName.toLowerCase().includes(query)
+          );
+          break;
+
+        case 'title':
+          filteredPosts = communityPosts.filter(post =>
+            post.title.toLowerCase().includes(query)
+          );
+          break;
+
+        case 'keyword':
+          filteredPosts = communityPosts.filter(post =>
+            post.content.toLowerCase().includes(query)
+          );
+          break;
+
+        case 'all':
+        default:
+          filteredPosts = communityPosts.filter(post =>
+            post.authorName.toLowerCase().includes(query) ||
+            post.title.toLowerCase().includes(query) ||
+            post.content.toLowerCase().includes(query)
+          );
+          break;
+      }
+
+      // Update the posts display
+      renderPosts(filteredPosts);
+
+      // Show "no posts" message if no results
+      const noPosts = document.getElementById('noPosts');
+      if (filteredPosts.length === 0) {
+        noPosts.style.display = 'block';
+        noPosts.innerHTML = `<p class="text-light-blue">No posts found matching "${query}".</p>`;
+      } else {
+        noPosts.style.display = 'none';
+      }
+    }
+
+    // Handle creating a new post
+    async function handleCreatePost(e) {
+      e.preventDefault();
+
+      if (!user) {
+        showError('You must be logged in to create a post');
+        return;
+      }
+
+      const title = document.getElementById('postTitle').value;
+      const content = document.getElementById('postContent').value;
+      const imageFile = document.getElementById('postImage').files[0];
+
+      if (!title || !content) {
+        showError('Title and content are required');
+        return;
+      }
+
+      // In a real app, you would upload the image to storage
+      // and save the post data to Firebase
+
+      try {
+        // Create new post object
+        const newPost = {
+          id: 'post' + Date.now(), // Generate a unique ID
+          title: title,
+          content: content,
+          authorId: user.localId,
+          authorName: user.displayName || 'User',
+          timestamp: Date.now(),
+          likes: 0,
+          comments: 0,
+          hasImage: !!imageFile
+        };
+
+        if (imageFile) {
+          // In a real app, we'd upload to Firebase Storage
+          // For demo, just use a placeholder image
+          newPost.imageUrl = 'https://via.placeholder.com/800x450?text=User+Image';
+        }
+
+        // Add to the beginning of our local posts array
+        communityPosts.unshift(newPost);
+
+        // Re-render posts
+        renderPosts(communityPosts);
+
+        // Hide modal and reset form
+        document.getElementById('createPostModal').style.display = 'none';
+        document.getElementById('createPostForm').reset();
+        document.getElementById('imagePreviewContainer').style.display = 'none';
+
+        showSuccess('Post created successfully!');
+      } catch (error) {
+        console.error('Error creating post:', error);
+        showError('Failed to create post. Please try again.');
+      }
+    }
+
+    // Handle like button click
+    function handleLikeClick(postId) {
+      // Find the post in our array
+      const postIndex = communityPosts.findIndex(post => post.id === postId);
+
+      if (postIndex === -1) return;
+
+      // In a real app, you would update the likes in Firebase
+      // For now, just update the local state
+
+      // Toggle like (in a real app, would check if user already liked)
+      communityPosts[postIndex].likes += 1;
+
+      // Update UI for this specific post
+      const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+      if (postElement) {
+        const likeCount = postElement.querySelector('.like-button span');
+        likeCount.textContent = communityPosts[postIndex].likes;
+      }
+    }
+
+    // Handle comment button click
+    function handleCommentClick(postId) {
+      // In a real app, you would show a comment form or comments section
+      showMessage('Comments feature coming soon!');
+    }
+
+    // Handle share button click
+    function handleShareClick(postId) {
+      // In a real app, you would implement sharing functionality
+      const shareText = `Check out this post on Triviation! https://triviation.example.com/community?post=${postId}`;
+
+      // Try to use the Web Share API if available
+      if (navigator.share) {
+        navigator.share({
+          title: 'Triviation Community Post',
+          text: shareText,
+          url: `https://triviation.example.com/community?post=${postId}`
+        })
+        .then(() => console.log('Shared successfully'))
+        .catch(error => console.log('Error sharing:', error));
+      } else {
+        // Fallback - copy to clipboard
+        navigator.clipboard.writeText(shareText)
+          .then(() => showSuccess('Post link copied to clipboard!'))
+          .catch(() => showError('Could not copy link. Please try again.'));
+      }
+    }
+
+    // Handle sign out
+    function handleSignOut() {
+      // Clear authentication data
+      localStorage.removeItem('triviaUser');
+      localStorage.removeItem('triviaToken');
+
+      user = null;
+      userData = null;
+      authToken = null;
+
+      // Show success message
+      showSuccess('Signed out successfully!');
+
+      // Reload page after short delay
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+
+    // Show error message
+    function showError(message) {
+      const errorMsg = document.getElementById('errorMessage');
+      errorMsg.textContent = message;
+      errorMsg.style.display = 'block';
+
+      setTimeout(() => {
+        errorMsg.style.display = 'none';
+      }, 5000);
+    }
+
+    // Show success message
+    function showSuccess(message) {
+      const successMsg = document.getElementById('successMessage');
+      successMsg.textContent = message;
+      successMsg.style.display = 'block';
+
+      setTimeout(() => {
+        successMsg.style.display = 'none';
+      }, 3000);
+    }
+
+    // General message (neutral)
+    function showMessage(message) {
+      const messageType = Math.random() > 0.5 ? 'success' : 'error'; // Just for variety in demo
+      if (messageType === 'success') {
+        showSuccess(message);
+      } else {
+        showError(message);
+      }
+    }
+  </script>
+</body>
+</html>
