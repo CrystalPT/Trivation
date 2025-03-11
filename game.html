@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Host Game - Triviation</title>
+
+  <!-- Tailwind CSS for styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Define color variables */
+    :root {
+      --dark-bg: #0d1321;
+      --dark-blue: #1d2d44;
+      --medium-blue: #3e5c76;
+      --light-blue: #748cab;
+      --cream: #f0ebd8;
+      --white: #ffffff;
+      --black: #000000;
+      --gray: #c8c8c8;
+      --red: #ff5050;
+      --green: #50c878;
+      --purple: #9370db;
+      --yellow: #ffd700;
+      --purple: #9370db;
+      --premium-gradient: linear-gradient(45deg, #9370db, #7b68ee);
+    }
+
+    /* Apply colors with CSS variables */
+    .bg-dark-bg { background-color: var(--dark-bg); }
+    .bg-dark-blue { background-color: var(--dark-blue); }
+    .bg-medium-blue { background-color: var(--medium-blue); }
+    .bg-light-blue { background-color: var(--light-blue); }
+    .bg-cream { background-color: var(--cream); }
+    .bg-red { background-color: var(--red); }
+    .bg-green { background-color: var(--green); }
+    .bg-yellow { background-color: var(--yellow); }
+    .bg-purple { background-color: var(--purple); }
+    .premium-gradient { background: var(--premium-gradient); }
+
+    .text-cream { color: var(--cream); }
+    .text-light-blue { color: var(--light-blue); }
+    .text-dark-blue { color: var(--dark-blue); }
+    .text-white { color: var(--white); }
+    .text-dark-bg { color: var(--dark-bg); }
+    .text-red { color: var(--red); }
+    .text-green { color: var(--green); }
+    .text-yellow { color: var(--yellow); }
+    .text-purple { color: var(--purple); }
+
+    .border-light-blue { border-color: var(--light-blue); }
+    .border-medium-blue { border-color: var(--medium-blue); }
+    .border-gray { border-color: var(--gray); }
+    .border-green { border-color: var(--green); }
+    .border-red { border-color: var(--red); }
+    .border-yellow { border-color: var(--yellow); }
+
+    /* Consistent button styling for better alignment */
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 1rem;
+      height: 40px;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background-color 0.2s, transform 0.1s;
+      white-space: nowrap;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Button hover effect */
+    .nav-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Button click effect */
+    .nav-button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    /* Dropdown menu item styling */
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+      color: var(--cream);
+      transition: background-color 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--medium-blue);
+      color: white;
+    }
+
+    .dropdown-item:active {
+      transform: scale(0.98);
+    }
+
+    /* Profile photo container animation */
+    #accountDropdownButton {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    #accountDropdownButton:hover {
+      transform: scale(1.05);
+    }
+
+    #accountDropdownButton:active {
+      transform: scale(0.95);
+    }
+
+    /* Animation for dropdown menu */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #accountDropdownMenu.animated {
+      animation: fadeIn 0.2s ease-out forwards;
+    }
+
+    /* Form controls */
+    .form-input {
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--light-blue);
+      box-shadow: 0 0 0 2px rgba(116, 140, 171, 0.3);
+    }
+
+    /* Button styles */
+    .form-button {
+      transition: transform 0.1s, box-shadow 0.2s;
+    }
+
+    .form-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .form-button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    /* New navigation style with underline effect */
+    .nav-link {
+      position: relative;
+      padding: 0.5rem 1.5rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      color: var(--cream);
+      text-decoration: none;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 3px;
+      bottom: -5px;
+      left: 0;
+      background-color: var(--light-blue);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+    /* Timer animation */
+    @keyframes countdown {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+
+    .timer-bar {
+      animation: countdown linear forwards;
+    }
+
+    /* Player card animation */
+    .player-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .player-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .player-card.correct {
+      border-color: var(--green);
+      background-color: rgba(80, 200, 120, 0.1);
+    }
+
+    .player-card.incorrect {
+      border-color: var(--red);
+      background-color: rgba(255, 80, 80, 0.1);
+    }
+
+    /* Game code display */
+    .game-code {
+      font-family: monospace;
+      letter-spacing: 4px;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    /* Share link tooltip */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 140px;
+      background-color: var(--dark-blue);
+      color: var(--cream);
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -70px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* Question progress bar */
+    .question-progress {
+      height: 6px;
+      border-radius: 3px;
+      background-color: var(--light-blue);
+    }
+
+    /* Friend list animations */
+    .friend-item {
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .friend-item:hover {
+      transform: translateY(-2px);
+      background-color: var(--medium-blue);
+    }
+
+    /* Toggle switch */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: var(--green);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(24px);
+    }
+  </style>
+</head>
+<body class="bg-dark-bg">
+  <div class="min-h-screen p-6">
+    <!-- Header -->
+    <header class="mb-8 p-4 rounded-lg bg-dark-blue">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center mb-4 md:mb-0">
+          <a href="index.html" class="text-4xl font-bold text-cream no-underline">
+            TRIVIATION
+          </a>
+          <a
+            href="https://github.com/CrystalPT/Trivation/releases"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="nav-link ml-4"
+          >
+            Downloads
+          </a>
+        </div>
+
+        <!-- Navigation buttons with new style -->
+        <div class="flex items-center gap-3 mb-4 md:mb-0">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="friends.html" class="nav-link">Friends</a>
+          <a href="game.html" class="nav-link active">Host Game</a>
+
+          <!-- These links will only be shown when logged in -->
+          <div id="loggedInNav" class="flex items-center gap-3" style="display: none;">
+            <a href="index.html?page=create-trivia" class="nav-link">Create Trivia</a>
+            <a href="index.html?page=my-trivias" class="nav-link">My Trivias</a>
+          </div>
+        </div>
+
+        <!-- User controls -->
+        <div class="flex items-center">
+          <div id="loggedOut" class="flex items-center gap-3">
+            <a href="login.html" class="nav-button bg-medium-blue text-cream no-underline">
+              Sign In
+            </a>
+            <a href="login.html?page=signup" class="nav-button bg-green text-white no-underline">
+              Sign Up
+            </a>
+          </div>
+
+          <!-- Account Dropdown -->
+          <div id="userAccountDropdown" class="relative" style="display: none;">
+            <button id="accountDropdownButton" class="flex items-center gap-2 rounded-full focus:outline-none">
+              <div id="profilePhotoContainer" class="w-10 h-10 rounded-full overflow-hidden border-2 border-light-blue flex items-center justify-center bg-medium-blue">
+                <!-- Default profile icon if no image is set -->
+                <span id="defaultProfileIcon" class="text-cream text-lg font-semibold"></span>
+                <!-- Profile image will be loaded here if available -->
+                <img id="profilePhoto" src="" alt="Profile" class="w-full h-full object-cover" style="display: none;">
+              </div>
+            </button>
+
+            <!-- Dropdown menu -->
+            <div id="accountDropdownMenu" class="absolute right-0 mt-2 w-48 bg-dark-blue border border-light-blue rounded-lg shadow-lg z-50" style="display: none;">
+              <div class="p-3 border-b border-medium-blue">
+                <p id="dropdownUsername" class="font-semibold text-cream truncate"></p>
+                <p id="dropdownEmail" class="text-sm text-light-blue truncate"></p>
+                <div id="premiumBadge" class="mt-1 px-2 py-0.5 premium-gradient text-white rounded text-xs font-semibold text-center hidden" style="text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                  TRIVIATION+
+                </div>
+              </div>
+              <ul class="py-1">
+                <li>
+                  <a href="account.html" class="dropdown-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Profile settings
+                  </a>
+                </li>
+                <li>
+                  <a href="friends.html" class="dropdown-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Friends
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="dropdown-item" id="changeProfilePhotoBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Change profile photo
+                  </a>
+                </li>
+                <li>
+                  <button id="dropdownSignOutBtn" class="dropdown-item text-red w-full text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Sign out
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Hidden file input for profile photo upload -->
+            <input type="file" id="profilePhotoInput" accept="image/jpeg, image/png" style="display: none;">
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Messages -->
+    <div id="errorMessage" class="mb-4 p-3 rounded-lg bg-red text-white" style="display: none;"></div>
+    <div id="successMessage" class="mb-4 p-3 rounded-lg bg-green text-white" style="display: none;"></div>
+
+    <!-- Login required message (shown to non-logged in users) -->
+    <div id="loginRequiredMessage" class="mb-8 p-6 rounded-lg bg-dark-blue text-center" style="display: none;">
+      <h2 class="text-2xl mb-4 text-cream">Login Required</h2>
+      <p class="text-light-blue mb-4">You need to be logged in to host a trivia game.</p>
+      <a href="login.html?redirect=game.html" class="px-4 py-2 bg-medium-blue text-cream rounded-lg inline-block hover:bg-light-blue transition-colors">
+        Sign In
+      </a>
+    </div>
+
+    <!-- Premium required message (shown to non-premium users) -->
+    <div id="premiumRequiredMessage" class="mb-8 p-6 rounded-lg bg-dark-blue text-center" style="display: none;">
+      <h2 class="text-2xl mb-4 text-cream">Triviation+ Required</h2>
+      <p class="text-light-blue mb-4">Hosting games is a premium feature. Upgrade to Triviation+ to host trivia games.</p>
+      <div class="flex flex-col md:flex-row gap-3 justify-center">
+        <a href="#" class="px-4 py-2 premium-gradient text-white rounded-lg inline-block hover:opacity-90 transition-colors" style="text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+          Upgrade to Triviation+
+        </a>
+        <a href="index.html" class="px-4 py-2 bg-medium-blue text-cream rounded-lg inline-block hover:bg-light-blue transition-colors">
+          Back to Home
+        </a>
+      </div>
+    </div>
+
+    <!-- Game Setup Content (shown to logged-in users) -->
+    <div id="gameSetupContent" class="mb-8" style="display: none;">
+      <div class="rounded-lg p-6 bg-dark-blue">
+        <h2 class="text-2xl mb-4 text-cream">Host a Trivia Game</h2>
+
+        <!-- Trivia Selection -->
+        <div class="mb-6">
+          <label class="block mb-2 text-light-blue">Select a Trivia</label>
+          <div id="triviaSelector" class="mb-2">
+            <p id="loadingTrivias" class="text-light-blue">Loading trivias...</p>
+            <select
+              id="triviaSelect"
+              class="w-full p-3 rounded-lg border border-light-blue bg-dark-bg text-cream form-input"
+              style="display: none;"
+            >
+            </select>
+          </div>
+          <p id="questionCountInfo" class="text-sm text-light-blue"></p>
+        </div>
+
+        <!-- Game Settings -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <h3 class="text-xl mb-3 text-light-blue">Game Settings</h3>
+
+            <!-- Question Timer -->
+            <div class="mb-4">
+              <label class="block mb-2 text-cream">Question Timer (seconds)</label>
+              <div class="flex items-center gap-2">
+                <input
+                  type="range"
+                  id="questionTimer"
+                  min="10"
+                  max="120"
+                  step="5"
+                  value="30"
+                  class="w-full"
+                />
+                <span id="timerValue" class="text-cream min-w-[40px] text-center">30</span>
+              </div>
+            </div>
+
+            <!-- Randomize Questions Switch -->
+            <div class="mb-4 flex items-center justify-between">
+              <label class="text-cream">Randomize Questions</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="randomizeToggle" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <!-- Allow Late Joins Switch -->
+            <div class="mb-4 flex items-center justify-between">
+              <label class="text-cream">Allow Late Joins</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="lateJoinToggle">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xl mb-3 text-light-blue">Game Access</h3>
+            <div class="mb-4">
+              <p class="text-cream mb-2">Share the game with friends:</p>
+              <div class="flex flex-col md:flex-row gap-2">
+                <button
+                  id="showInviteFriendsBtn"
+                  class="nav-button bg-medium-blue text-cream"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  Invite Friends
+                </button>
+                <button
+                  id="generateGameCodeBtn"
+                  class="nav-button bg-green text-white"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  Generate Game Code
+                </button>
+              </div>
+            </div>
+            <div id="gameCodeContainer" class="mb-4 p-3 rounded-lg bg-medium-blue" style="display: none;">
+              <div class="flex justify-between items-center">
+                <div>
+                  <p class="text-sm text-light-blue mb-1">Share this code with players:</p>
+                  <p id="gameCodeDisplay" class="game-code text-cream">ABCD123</p>
+                </div>
+                <div class="tooltip">
+                  <button id="copyGameCodeBtn" class="p-2 rounded-full bg-dark-blue text-cream">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                    </svg>
+                  </button>
+                  <span class="tooltiptext">Copy to clipboard</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Waiting Players List -->
+        <div id="waitingRoom" style="display: none;">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="text-xl text-light-blue">Waiting Room</h3>
+            <p class="text-cream"><span id="playerCount">0</span> players joined</p>
+          </div>
+          <div id="waitingPlayersContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-4">
+            <!-- Players will be added here dynamically -->
+          </div>
+          <div class="flex justify-center mt-4">
+            <button
+              id="startGameBtn"
+              class="nav-button px-6 py-3 text-lg bg-green text-white"
+              disabled
+            >
+              Start Game
+            </button>
+          </div>
+        </div>
+
+        <!-- Start a game button -->
+        <div id="startHostingControls" class="flex justify-center mt-4">
+          <button
+            id="startHostingBtn"
+            class="nav-button px-6 py-3 text-lg bg-medium-blue text-cream"
+          >
+            Start Hosting
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invite Friends Modal -->
+    <div id="inviteFriendsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
+      <div class="bg-dark-blue rounded-lg p-6 max-w-lg w-full max-h-[80vh] flex flex-col">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl text-cream">Invite Friends</h3>
+          <button id="closeInviteModalBtn" class="text-light-blue hover:text-cream">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="mb-4">
+          <input
+            type="text"
+            id="friendSearchInput"
+            placeholder="Search friends..."
+            class="w-full p-2 rounded-lg border bg-dark-bg text-cream border-light-blue form-input"
+          />
+        </div>
+        <div class="overflow-y-auto flex-grow">
+          <div id="loadingFriends" class="text-center py-4">
+            <p class="text-light-blue">Loading your friends...</p>
+          </div>
+          <div id="noFriendsMessage" class="text-center py-4" style="display: none;">
+            <p class="text-light-blue">You don't have any friends yet.</p>
+            <a href="friends.html" class="text-cream hover:underline">Add Friends</a>
+          </div>
+          <div id="friendsList" class="space-y-2">
+            <!-- Friends will be added here dynamically -->
+          </div>
+        </div>
+        <div class="mt-4 flex justify-end">
+          <button id="inviteSelectedBtn" class="nav-button bg-green text-white">
+            Invite Selected
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Host Interface - In Game -->
+    <div id="gameHostInterface" class="mb-8" style="display: none;">
+      <div class="rounded-lg p-6 bg-dark-blue">
+        <!-- Game Info Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+          <div>
+            <h2 id="gameTriviaTitle" class="text-2xl text-cream">Trivia Title</h2>
+            <p id="gameQuestionCounter" class="text-light-blue">Question 1 of 10</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-2 mt-2 md:mt-0">
+            <button id="endGameBtn" class="nav-button bg-red text-white">
+              End Game
+            </button>
+            <div id="gameCodeDisplay2" class="py-2 px-4 bg-medium-blue rounded-lg text-center">
+              <p class="text-xs text-light-blue">Game Code:</p>
+              <p class="text-cream font-mono font-bold tracking-wider">ABCD123</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question Display -->
+        <div id="questionContainer" class="mb-6 p-4 rounded-lg bg-medium-blue">
+          <div class="mb-3">
+            <!-- Timer bar -->
+            <div class="w-full bg-dark-blue rounded-full h-2 mb-2">
+              <div id="timerBar" class="question-progress timer-bar" style="width: 100%; animation-duration: 30s;"></div>
+            </div>
+            <div class="flex justify-between text-xs text-light-blue">
+              <span id="timeLeft">30s left</span>
+              <span id="timerSetting">30 second timer</span>
+            </div>
+          </div>
+          <h3 id="questionText" class="text-xl font-bold mb-4 text-cream">Question text will appear here.</h3>
+          <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="p-3 rounded-lg bg-dark-blue border border-light-blue cursor-pointer hover:bg-dark-bg">
+              <p class="text-cream">Option 1</p>
+            </div>
+            <div class="p-3 rounded-lg bg-dark-blue border border-light-blue cursor-pointer hover:bg-dark-bg">
+              <p class="text-cream">Option 2</p>
+            </div>
+            <div class="p-3 rounded-lg bg-dark-blue border border-light-blue cursor-pointer hover:bg-dark-bg">
+              <p class="text-cream">Option 3</p>
+            </div>
+            <div class="p-3 rounded-lg bg-dark-blue border border-light-blue cursor-pointer hover:bg-dark-bg">
+              <p class="text-cream">Option 4</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Player Progress -->
+        <div class="mb-6">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="text-xl text-light-blue">Players</h3>
+            <div>
+              <span id="playersAnsweredCounter" class="text-cream">0/0 answered</span>
+              <button id="skipTimerBtn" class="ml-2 px-3 py-1 bg-yellow text-dark-bg rounded-lg text-sm" style="display: none;">
+                Skip Wait
+              </button>
+            </div>
+          </div>
+          <div id="playerProgressContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            <!-- Players will be added here dynamically -->
+          </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="flex justify-between">
+          <button id="previousQuestionBtn" class="nav-button bg-medium-blue text-cream" disabled>
+            Previous
+          </button>
+          <button id="nextQuestionBtn" class="nav-button bg-medium-blue text-cream" disabled>
+            Next Question
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="gameResultsScreen" class="mb-8" style="display: none;">
+      <div class="rounded-lg p-6 bg-dark-blue">
+        <h2 class="text-2xl mb-4 text-center text-cream">Game Results</h2>
+
+        <div class="mb-6">
+          <h3 class="text-xl mb-3 text-light-blue">Final Leaderboard</h3>
+          <div id="finalLeaderboard" class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr style="border-bottom: 1px solid var(--light-blue)">
+                  <th class="px-4 py-2 text-left text-light-blue">Rank</th>
+                  <th class="px-4 py-2 text-left text-light-blue">Player</th>
+                  <th class="px-4 py-2 text-right text-light-blue">Score</th>
+                  <th class="px-4 py-2 text-right text-light-blue">Correct</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardBody">
+                <!-- Leaderboard rows will be added here dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="flex justify-center gap-3">
+          <button id="hostAgainBtn" class="nav-button bg-medium-blue text-cream">
+            Host Another Game
+          </button>
+          <button id="backToHomeBtn" class="nav-button bg-dark-blue text-cream border border-light-blue">
+            Back to Home
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Firebase configuration
+    const FIREBASE_API_KEY = "AIzaSyDIgbZvfYb2kxazfrZcrddAVEZ7tVdWvhA";
+    const FIREBASE_DATABASE_URL = "https://trivia-20b98-default-rtdb.europe-west1.firebasedatabase.app";
+
+    // Global state
+    let user = null;
+    let userData = null;
+    let authToken = null;
+    let userHasPremium = false;
+    let allTrivias = [];
+    let selectedTrivia = null;
+    let triviaQuestions = [];
+    let gameCode = null;
+    let currentGameRef = null;
+    let friends = [];
+    let players = [];
+    let invitedFriends = [];
+    let currentQuestionIndex = 0;
+    let gameInProgress = false;
+    let questionTimer = null;
+    let questionEndTime = null;
+    let gameSettings = {
+      timer: 30,
+      randomizeQuestions: true,
+      allowLateJoin: false
+    };
+
+    // Game state listeners
+    let gamePlayersRef = null;
+    let gameStatusRef = null;
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check authentication state
+      checkAuthState().then(isLoggedIn => {
+        if (isLoggedIn) {
+          // Check if user has premium access
+          checkPremiumAccess().then(hasPremium => {
+            if (hasPremium) {
+              // Show game setup content
+              document.getElementById('gameSetupContent').style.display = 'block';
+              document.getElementById('loginRequiredMessage').style.display = 'none';
+              document.getElementById('premiumRequiredMessage').style.display = 'none';
+
+              // Load trivias
+              loadTrivias();
+
+              // Setup event listeners
+              setupEventListeners();
+            } else {
+              // Show premium required message
+              document.getElementById('gameSetupContent').style.display = 'none';
+              document.getElementById('loginRequiredMessage').style.display = 'none';
+              document.getElementById('premiumRequiredMessage').style.display = 'block';
+            }
+          });
+        } else {
+          // Show login required message
+          document.getElementById('gameSetupContent').style.display = 'none';
+          document.getElementById('loginRequiredMessage').style.display = 'block';
+          document.getElementById('premiumRequiredMessage').style.display = 'none';
+        }
+      });
+
+      // Setup account dropdown if user is logged in
+      setupAccountDropdown();
+    });
+
+    // Check authentication state
+    async function checkAuthState() {
+      const savedUser = localStorage.getItem('triviaUser');
+      const savedToken = localStorage.getItem('triviaToken');
+
+      if (savedUser && savedToken) {
+        user = JSON.parse(savedUser);
+        authToken = savedToken;
+
+        // Show logged in UI
+        document.getElementById('loggedOut').style.display = 'none';
+        document.getElementById('loggedInNav').style.display = 'flex';
+        document.getElementById('userAccountDropdown').style.display = 'block';
+
+        // Update user profile in dropdown
+        updateUserDropdownInfo();
+
+        // Load user data
+        await fetchUserData(user.localId, savedToken);
+        return true;
+      } else {
+        // Show logged out UI
+        document.getElementById('loggedOut').style.display = 'flex';
+        document.getElementById('loggedInNav').style.display = 'none';
+        document.getElementById('userAccountDropdown').style.display = 'none';
+        return false;
+      }
+    }
+
+    // Fetch user data from Firebase
+    async function fetchUserData(userId, token) {
+      try {
+        const response = await fetch(`${FIREBASE_DATABASE_URL}/users/${userId}.json?auth=${token}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data) {
+            userData = data;
+
+            // If username is available, update display name
+            if (data.username) {
+              user.displayName = data.username;
+              localStorage.setItem('triviaUser', JSON.stringify(user));
+            }
+
+            // Check premium status
+            userHasPremium = !!data.has_premium;
+            updateUserDropdownInfo();
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+
+    // Check if user has premium access
+    async function checkPremiumAccess() {
+      if (!user || !authToken) return false;
+
+      try {
+        // List of user IDs with premium access
+        const premiumUserIds = [
+          'ADMIN123',
+          'VIP456',
+          'PREMIUM789'
+        ];
+
+        // List of email addresses with premium access
+        const premiumEmails = [
+          'crystalplayzyt0@gmail.com',
+          'oris1359@gmail.com',
+          'ampeiiyt@gmail.com'
+        ];
+
+        // Check if user already has premium status in userData
+        if (userData && userData.has_premium === true) {
+          userHasPremium = true;
+          return true;
+        }
+
+        // Check premium access based on various criteria
+        const isAdmin = user.email && user.email.endsWith('@triviation.com');
+        const isPremiumById = premiumUserIds.includes(user.localId);
+        const isPremiumByEmail = user.email && premiumEmails.includes(user.email.toLowerCase());
+        const hasPremium = isAdmin || isPremiumById || isPremiumByEmail;
+
+        // If premium status changed, update it in the database
+        if (hasPremium !== userHasPremium) {
+          userHasPremium = hasPremium;
+
+          // Save premium status in Firebase
+          await fetch(`${FIREBASE_DATABASE_URL}/users/${user.localId}/has_premium.json?auth=${authToken}`, {
+            method: 'PUT',
+            body: JSON.stringify(hasPremium)
+          });
+
+          // Update UI
+          updateUserDropdownInfo();
+        }
+
+        return hasPremium;
+      } catch (error) {
+        console.error("Error checking premium access:", error);
+        return false;
+      }
+    }
+
+    // Setup Account Dropdown
+    function setupAccountDropdown() {
+      // Elements
+      const accountDropdownButton = document.getElementById('accountDropdownButton');
+      const accountDropdownMenu = document.getElementById('accountDropdownMenu');
+      const dropdownSignOutBtn = document.getElementById('dropdownSignOutBtn');
+      const changeProfilePhotoBtn = document.getElementById('changeProfilePhotoBtn');
+      const profilePhotoInput = document.getElementById('profilePhotoInput');
+
+      if (!accountDropdownButton) return;
+
+      // Toggle dropdown when clicking the button
+      accountDropdownButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (accountDropdownMenu.style.display === 'none') {
+          accountDropdownMenu.style.display = 'block';
+          // Add animation class
+          accountDropdownMenu.classList.add('animated');
+        } else {
+          accountDropdownMenu.style.display = 'none';
+        }
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (accountDropdownMenu.style.display !== 'none' &&
+            !accountDropdownButton.contains(e.target) &&
+            !accountDropdownMenu.contains(e.target)) {
+          accountDropdownMenu.style.display = 'none';
+        }
+      });
+
+      // Sign out functionality
+      dropdownSignOutBtn?.addEventListener('click', () => {
+        handleSignOut();
+      });
+
+      // Profile photo change
+      changeProfilePhotoBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        profilePhotoInput.click();
+      });
+
+      // Handle file selection
+      profilePhotoInput?.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          const file = e.target.files[0];
+
+          // Check file type
+          if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+            showError('Please select a JPEG or PNG image.');
+            return;
+          }
+
+          // Check file size (limit to 2MB)
+          if (file.size > 2 * 1024 * 1024) {
+            showError('Image size must be less than 2MB.');
+            return;
+          }
+
+          const reader = new FileReader();
+
+          reader.onload = function(e) {
+            // Display the image
+            const profilePhoto = document.getElementById('profilePhoto');
+            const defaultProfileIcon = document.getElementById('defaultProfileIcon');
+            profilePhoto.src = e.target.result;
+            profilePhoto.style.display = 'block';
+            defaultProfileIcon.style.display = 'none';
+
+            // Save to localStorage
+            localStorage.setItem('profilePhotoData', e.target.result);
+
+            // Close dropdown and show success message
+            accountDropdownMenu.style.display = 'none';
+            showSuccess('Profile photo updated!');
+          };
+
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // Update user info in the dropdown
+    function updateUserDropdownInfo() {
+      if (!user) return;
+
+      const dropdownUsername = document.getElementById('dropdownUsername');
+      const dropdownEmail = document.getElementById('dropdownEmail');
+      const defaultProfileIcon = document.getElementById('defaultProfileIcon');
+      const profilePhoto = document.getElementById('profilePhoto');
+      const premiumBadge = document.getElementById('premiumBadge');
+
+      if (!dropdownUsername || !dropdownEmail || !defaultProfileIcon || !profilePhoto) return;
+
+      // Set username and email
+      dropdownUsername.textContent = user.displayName || 'User';
+      dropdownEmail.textContent = user.email || '';
+
+      // Set initials for default icon
+      if (user.displayName) {
+        defaultProfileIcon.textContent = user.displayName.substring(0, 1).toUpperCase();
+      } else if (user.email) {
+        defaultProfileIcon.textContent = user.email.substring(0, 1).toUpperCase();
+      } else {
+        defaultProfileIcon.textContent = 'U';
+      }
+
+      // Check if user has a profile photo
+      const savedPhoto = localStorage.getItem('profilePhotoData');
+      if (savedPhoto) {
+        profilePhoto.src = savedPhoto;
+        profilePhoto.style.display = 'block';
+        defaultProfileIcon.style.display = 'none';
+      } else {
+        profilePhoto.style.display = 'none';
+        defaultProfileIcon.style.display = 'block';
+      }
+
+      // Show premium badge if user has premium
+      if (userHasPremium && premiumBadge) {
+        premiumBadge.classList.remove('hidden');
+      } else if (premiumBadge) {
+        premiumBadge.classList.add('hidden');
+      }
+    }
+
+    // Setup all event listeners
+    function setupEventListeners() {
+      // Timer slider
+      const timerSlider = document.getElementById('questionTimer');
+      const timerValue = document.getElementById('timerValue');
+
+      timerSlider.addEventListener('input', (e) => {
+        const value = e.target.value;
+        timerValue.textContent = value;
+        gameSettings.timer = parseInt(value);
+      });
+
+      // Toggle switches
+      document.getElementById('randomizeToggle').addEventListener('change', (e) => {
+        gameSettings.randomizeQuestions = e.target.checked;
+      });
+
+      document.getElementById('lateJoinToggle').addEventListener('change', (e) => {
+        gameSettings.allowLateJoin = e.target.checked;
+      });
+
+      // Game code generation
+      document.getElementById('generateGameCodeBtn').addEventListener('click', generateGameCode);
+      document.getElementById('copyGameCodeBtn').addEventListener('click', copyGameCodeToClipboard);
+
+      // Friends modal
+      document.getElementById('showInviteFriendsBtn').addEventListener('click', showInviteFriendsModal);
+      document.getElementById('closeInviteModalBtn').addEventListener('click', hideInviteFriendsModal);
+      document.getElementById('inviteSelectedBtn').addEventListener('click', inviteSelectedFriends);
+      document.getElementById('friendSearchInput').addEventListener('input', filterFriendsList);
+
+      // Game controls
+      document.getElementById('startHostingBtn').addEventListener('click', startHosting);
+      document.getElementById('startGameBtn').addEventListener('click', startGame);
+      document.getElementById('endGameBtn').addEventListener('click', confirmEndGame);
+      document.getElementById('skipTimerBtn').addEventListener('click', skipCurrentQuestionTimer);
+
+      // Navigation
+      document.getElementById('previousQuestionBtn').addEventListener('click', navigateToPreviousQuestion);
+      document.getElementById('nextQuestionBtn').addEventListener('click', navigateToNextQuestion);
+
+      // Results screen
+      document.getElementById('hostAgainBtn').addEventListener('click', resetGameAndHostAgain);
+      document.getElementById('backToHomeBtn').addEventListener('click', () => window.location.href = 'index.html');
+
+      // Trivia selection change
+      document.getElementById('triviaSelect').addEventListener('change', handleTriviaChange);
+    }
+
+    // Load all trivias
+    async function loadTrivias() {
+      try {
+        const response = await fetch(`${FIREBASE_DATABASE_URL}/trivias.json`);
+        if (response.ok) {
+          const data = await response.json();
+
+          document.getElementById('loadingTrivias').style.display = 'none';
+
+          if (data) {
+            // Convert to array and filter trivias with questions
+            allTrivias = Object.keys(data)
+              .map(key => ({
+                id: key,
+                ...data[key]
+              }))
+              .filter(trivia => trivia.question_count > 0);
+
+            // Sort by name
+            allTrivias.sort((a, b) => a.title.localeCompare(b.title));
+
+            // Populate dropdown
+            const selectElement = document.getElementById('triviaSelect');
+            selectElement.innerHTML = '';
+
+            allTrivias.forEach(trivia => {
+              const option = document.createElement('option');
+              option.value = trivia.id;
+              option.textContent = `${trivia.title} (${trivia.question_count || 0} questions)`;
+              selectElement.appendChild(option);
+            });
+
+            if (allTrivias.length > 0) {
+              selectElement.style.display = 'block';
+              // Select first trivia by default
+              selectedTrivia = allTrivias[0];
+              updateQuestionCountInfo(selectedTrivia);
+            } else {
+              showError('No trivias with questions found. Create a trivia with questions first.');
+            }
+          } else {
+            showError('No trivias found. Create a trivia with questions first.');
+          }
+        }
+      } catch (error) {
+        console.error("Error loading trivias:", error);
+        showError('Failed to load trivias. Please try again.');
+      }
+    }
+
+    // Update question count info for selected trivia
+    function updateQuestionCountInfo(trivia) {
+      const infoElement = document.getElementById('questionCountInfo');
+      if (trivia && trivia.question_count) {
+        infoElement.textContent = `This trivia has ${trivia.question_count} questions.`;
+      } else {
+        infoElement.textContent = 'This trivia has no questions yet.';
+      }
+    }
+
+    // Handle trivia selection change
+    function handleTriviaChange(e) {
+      const selectedId = e.target.value;
+      selectedTrivia = allTrivias.find(t => t.id === selectedId);
+      if (selectedTrivia) {
+        updateQuestionCountInfo(selectedTrivia);
+      }
+    }
+
+    // Load trivia questions
+    async function loadTriviaQuestions(triviaId) {
+      try {
+        const response = await fetch(`${FIREBASE_DATABASE_URL}/trivia_questions/${triviaId}.json`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data) {
+            // Convert to array
+            triviaQuestions = Object.keys(data).map(key => ({
+              id: key,
+              ...data[key]
+            }));
+
+            // Randomize questions if setting is enabled
+            if (gameSettings.randomizeQuestions) {
+              triviaQuestions = shuffleArray(triviaQuestions);
+            }
+
+            return triviaQuestions;
+          }
+        }
+        return [];
+      } catch (error) {
+        console.error("Error loading trivia questions:", error);
+        return [];
+      }
+    }
+
+    // Generate a unique game code
+    async function generateGameCode() {
+      if (!selectedTrivia) {
+        showError('Please select a trivia first.');
+        return;
+      }
+
+      // Generate a random 6-character code
+      const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Excludes similar looking characters
+      let code = '';
+      for (let i = 0; i < 6; i++) {
+        code += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+
+      gameCode = code;
+
+      // Display the code
+      document.getElementById('gameCodeDisplay').textContent = code;
+      document.getElementById('gameCodeContainer').style.display = 'block';
+
+      // Store the game info in Firebase
+      try {
+        const gameData = {
+          trivia_id: selectedTrivia.id,
+          trivia_title: selectedTrivia.title,
+          host_id: user.localId,
+          host_name: user.displayName || userData?.username || 'Host',
+          created_at: Date.now(),
+          status: 'waiting', // waiting, in_progress, completed
+          settings: {
+            question_timer: gameSettings.timer,
+            randomize_questions: gameSettings.randomizeQuestions,
+            allow_late_join: gameSettings.allowLateJoin
+          },
+          players: {},
+          current_question: 0
+        };
+
+        const response = await fetch(`${FIREBASE_DATABASE_URL}/games/${code}.json?auth=${authToken}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(gameData)
+        });
+
+        if (response.ok) {
+          showSuccess('Game code generated! Share it with others to join.');
+
+          // Start listening for player joins
+          startListeningForPlayers(code);
+
+          // Show waiting room
+          document.getElementById('waitingRoom').style.display = 'block';
+          document.getElementById('startHostingControls').style.display = 'none';
+
+          // Store reference to current game
+          currentGameRef = `${FIREBASE_DATABASE_URL}/games/${code}`;
+
+          // Update start game button
+          updateStartGameButton();
+        } else {
+          showError('Failed to generate game code. Please try again.');
+        }
+      } catch (error) {
+        console.error("Error creating game:", error);
+        showError('An error occurred. Please try again.');
+      }
+    }
+
+    // Listen for player joins
+    function startListeningForPlayers(code) {
+      const playersRef = `${FIREBASE_DATABASE_URL}/games/${code}/players`;
+
+      // Setup interval to check for new players (in a real app, you'd use WebSockets or Firebase Realtime DB listeners)
+      gamePlayersRef = setInterval(async () => {
+        try {
+          const response = await fetch(`${playersRef}.json`);
+          if (response.ok) {
+            const data = await response.json();
+            if (data) {
+              // Update players array
+              players = Object.keys(data).map(key => ({
+                id: key,
+                ...data[key]
+              }));
+
+              // Update UI
+              updatePlayerCount(players.length);
+              renderWaitingPlayers(players);
+
+              // Update start button
+              updateStartGameButton();
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching players:", error);
+        }
+      }, 3000); // Check every 3 seconds
+    }
+
+    // Update player count display
+    function updatePlayerCount(count) {
+      document.getElementById('playerCount').textContent = count;
+    }
+
+    // Render waiting players
+    function renderWaitingPlayers(playersList) {
+      const container = document.getElementById('waitingPlayersContainer');
+      container.innerHTML = '';
+
+      if (playersList.length === 0) {
+        container.innerHTML = '<p class="text-cream">No players have joined yet. Share the game code to invite players.</p>';
+        return;
+      }
+
+      playersList.forEach(player => {
+        const playerCard = document.createElement('div');
+        playerCard.className = 'player-card p-3 rounded-lg bg-medium-blue border border-light-blue';
+
+        // Create initial for player icon
+        const initial = (player.name || 'P').charAt(0).toUpperCase();
+
+        playerCard.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-dark-blue text-cream flex items-center justify-center font-bold">
+              ${initial}
+            </div>
+            <div class="flex-grow min-w-0">
+              <p class="font-semibold text-cream truncate">${player.name || 'Player'}</p>
+              <p class="text-light-blue text-xs">Joined</p>
+            </div>
+          </div>
+        `;
+
+        container.appendChild(playerCard);
+      });
+    }
+
+    // Update start game button state
+    function updateStartGameButton() {
+      const startBtn = document.getElementById('startGameBtn');
+
+      if (players.length > 0) {
+        startBtn.disabled = false;
+        startBtn.classList.remove('bg-gray');
+        startBtn.classList.add('bg-green');
+      } else {
+        startBtn.disabled = true;
+        startBtn.classList.remove('bg-green');
+        startBtn.classList.add('bg-gray');
+      }
+    }
+
+    // Copy game code to clipboard
+    function copyGameCodeToClipboard() {
+      if (!gameCode) return;
+
+      navigator.clipboard.writeText(gameCode).then(() => {
+        // Show tooltip text update
+        const tooltip = document.querySelector('.tooltiptext');
+        tooltip.textContent = 'Copied!';
+
+        // Reset tooltip text after 2 seconds
+        setTimeout(() => {
+          tooltip.textContent = 'Copy to clipboard';
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+      });
+    }
+
+    // Show invite friends modal
+    function showInviteFriendsModal() {
+      loadFriends();
+      document.getElementById('inviteFriendsModal').style.display = 'flex';
+    }
+
+    // Hide invite friends modal
+    function hideInviteFriendsModal() {
+      document.getElementById('inviteFriendsModal').style.display = 'none';
+    }
+
+    // Load friends list
+    async function loadFriends() {
+      const friendsList = document.getElementById('friendsList');
+      const loadingFriends = document.getElementById('loadingFriends');
+      const noFriendsMessage = document.getElementById('noFriendsMessage');
+
+      friendsList.innerHTML = '';
+      loadingFriends.style.display = 'block';
+      noFriendsMessage.style.display = 'none';
+
+      try {
+        // First get user's friends
+        const userFriendsRef = await fetch(`${FIREBASE_DATABASE_URL}/user_friends/${user.localId}.json?auth=${authToken}`);
+
+        if (userFriendsRef.ok) {
+          const friendsData = await userFriendsRef.json();
+
+          if (friendsData) {
+            // We have friends data
+            const friendIds = Object.keys(friendsData).filter(key => friendsData[key] === true);
+
+            if (friendIds.length > 0) {
+              // Get all users to find friend details
+              const usersResponse = await fetch(`${FIREBASE_DATABASE_URL}/users.json`);
+
+              if (usersResponse.ok) {
+                const usersData = await usersResponse.json();
+
+                // Map friend IDs to user data
+                friends = friendIds
+                  .filter(id => usersData[id]) // Make sure user exists
+                  .map(id => ({
+                    id,
+                    name: usersData[id].username || 'User',
+                    email: usersData[id].email || ''
+                  }));
+
+                // Render friends
+                renderFriendsList(friends);
+
+                loadingFriends.style.display = 'none';
+                if (friends.length > 0) {
+                  friendsList.style.display = 'block';
+                  noFriendsMessage.style.display = 'none';
+                } else {
+                  friendsList.style.display = 'none';
+                  noFriendsMessage.style.display = 'block';
+                }
+              }
+            } else {
+              loadingFriends.style.display = 'none';
+              friendsList.style.display = 'none';
+              noFriendsMessage.style.display = 'block';
+            }
+          } else {
+            loadingFriends.style.display = 'none';
+            friendsList.style.display = 'none';
+            noFriendsMessage.style.display = 'block';
+          }
+        }
+      } catch (error) {
+        console.error("Error loading friends:", error);
+        loadingFriends.style.display = 'none';
+        friendsList.innerHTML = '<p class="text-red">Error loading friends. Please try again.</p>';
+      }
+    }
+
+    // Render friends list in invite modal
+    function renderFriendsList(friendsList) {
+      const container = document.getElementById('friendsList');
+      container.innerHTML = '';
+
+      friendsList.forEach(friend => {
+        const friendItem = document.createElement('div');
+        friendItem.className = 'friend-item p-3 rounded-lg bg-dark-blue flex items-center justify-between';
+
+        // Create initial for friend icon
+        const initial = (friend.name || 'F').charAt(0).toUpperCase();
+
+        // Check if friend is already invited
+        const isInvited = invitedFriends.some(f => f.id === friend.id);
+
+        friendItem.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-medium-blue text-cream flex items-center justify-center font-bold">
+              ${initial}
+            </div>
+            <div>
+              <p class="font-semibold text-cream">${friend.name || 'Friend'}</p>
+              <p class="text-light-blue text-xs">${friend.email || ''}</p>
+            </div>
+          </div>
+          <div>
+            <label class="inline-flex items-center">
+              <input type="checkbox" class="form-checkbox h-5 w-5 text-green" value="${friend.id}" ${isInvited ? 'checked' : ''}>
+            </label>
+          </div>
+        `;
+
+        container.appendChild(friendItem);
+      });
+    }
+
+    // Filter friends list by search term
+    function filterFriendsList() {
+      const searchTerm = document.getElementById('friendSearchInput').value.toLowerCase();
+
+      if (!friends || friends.length === 0) return;
+
+      const filteredFriends = friends.filter(friend =>
+        (friend.name && friend.name.toLowerCase().includes(searchTerm)) ||
+        (friend.email && friend.email.toLowerCase().includes(searchTerm))
+      );
+
+      renderFriendsList(filteredFriends);
+    }
+
+    // Invite selected friends
+    async function inviteSelectedFriends() {
+      if (!gameCode) {
+        showError('Please generate a game code first.');
+        hideInviteFriendsModal();
+        return;
+      }
+
+      // Get all checked friends
+      const checkedBoxes = document.querySelectorAll('#friendsList input[type="checkbox"]:checked');
+
+      if (checkedBoxes.length === 0) {
+        showError('Please select at least one friend to invite.');
+        return;
+      }
+
+      const selectedFriendIds = Array.from(checkedBoxes).map(cb => cb.value);
+
+      // Create invitations in Firebase
+      try {
+        for (const friendId of selectedFriendIds) {
+          // Store invitation
+          await fetch(`${FIREBASE_DATABASE_URL}/game_invitations/${friendId}/${gameCode}.json?auth=${authToken}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              game_code: gameCode,
+              trivia_id: selectedTrivia.id,
+              trivia_title: selectedTrivia.title,
+              host_id: user.localId,
+              host_name: user.displayName || userData?.username || 'Host',
+              sent_at: Date.now()
+            })
+          });
+
+          // Add to invited list
+          const friend = friends.find(f => f.id === friendId);
+          if (friend && !invitedFriends.some(f => f.id === friendId)) {
+            invitedFriends.push(friend);
+          }
+        }
+
+        showSuccess(`Invitations sent to ${selectedFriendIds.length} friends!`);
+        hideInviteFriendsModal();
+
+      } catch (error) {
+        console.error("Error sending invitations:", error);
+        showError('Failed to send some invitations. Please try again.');
+      }
+    }
+
+    // Start hosting the game
+    function startHosting() {
+      if (!selectedTrivia) {
+        showError('Please select a trivia first.');
+        return;
+      }
+
+      if (selectedTrivia.question_count < 1) {
+        showError('The selected trivia has no questions. Please select another trivia.');
+        return;
+      }
+
+      // Generate game code if not already generated
+      if (!gameCode) {
+        generateGameCode();
+      }
+    }
+
+    // Start the game
+    async function startGame() {
+      if (!gameCode || !selectedTrivia) {
+        showError('Cannot start the game. Please check your trivia selection and game code.');
+        return;
+      }
+
+      if (players.length === 0) {
+        showError('No players have joined. Cannot start the game.');
+        return;
+      }
+
+      try {
+        // Load questions if not already loaded
+        if (triviaQuestions.length === 0) {
+          triviaQuestions = await loadTriviaQuestions(selectedTrivia.id);
+
+          if (triviaQuestions.length === 0) {
+            showError('Failed to load questions for this trivia.');
+            return;
+          }
+        }
+
+        // Update game status in Firebase
+        await fetch(`${currentGameRef}/status.json?auth=${authToken}`, {
+          method: 'PUT',
+          body: JSON.stringify('in_progress')
+        });
+
+        // Initialize current question
+        currentQuestionIndex = 0;
+
+        // Show game host interface
+        document.getElementById('gameSetupContent').style.display = 'none';
+        document.getElementById('gameHostInterface').style.display = 'block';
+
+        // Update game info
+        document.getElementById('gameTriviaTitle').textContent = selectedTrivia.title;
+
+        // Show first question
+        showQuestion(currentQuestionIndex);
+
+        // Start monitoring game status
+        startGameStatusMonitoring();
+
+        gameInProgress = true;
+      } catch (error) {
+        console.error("Error starting game:", error);
+        showError('Failed to start the game. Please try again.');
+      }
+    }
+
+    // Show a specific question
+    async function showQuestion(index) {
+      if (index < 0 || index >= triviaQuestions.length) {
+        showError('Invalid question index.');
+        return;
+      }
+
+      // Clear any existing timer
+      if (questionTimer) {
+        clearTimeout(questionTimer);
+      }
+
+      const question = triviaQuestions[index];
+
+      // Update question display
+      document.getElementById('questionText').textContent = question.question;
+      document.getElementById('gameQuestionCounter').textContent = `Question ${index + 1} of ${triviaQuestions.length}`;
+
+      // Update options
+      const optionsContainer = document.getElementById('optionsContainer');
+      optionsContainer.innerHTML = '';
+
+      question.options.forEach((option, i) => {
+        const optionElement = document.createElement('div');
+        optionElement.className = `p-3 rounded-lg bg-dark-blue border ${i === question.correct ? 'border-green' : 'border-light-blue'} cursor-pointer hover:bg-dark-bg`;
+        optionElement.innerHTML = `
+          <p class="text-cream">${option} ${i === question.correct ? '✓' : ''}</p>
+        `;
+        optionsContainer.appendChild(optionElement);
+      });
+
+      // Update current question in Firebase
+      await fetch(`${currentGameRef}/current_question.json?auth=${authToken}`, {
+        method: 'PUT',
+        body: JSON.stringify(index)
+      });
+
+      // Reset player answers for this question
+      await fetch(`${currentGameRef}/question_results/${index}.json?auth=${authToken}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          question_id: question.id,
+          answers: {}
+        })
+      });
+
+      // Update navigation buttons
+      document.getElementById('previousQuestionBtn').disabled = index === 0;
+      document.getElementById('nextQuestionBtn').disabled = index === triviaQuestions.length - 1;
+      document.getElementById('nextQuestionBtn').textContent = index === triviaQuestions.length - 1 ? 'End Game' : 'Next Question';
+
+      // Update player progress
+      updatePlayerProgress([]);
+
+      // Update timer display
+      document.getElementById('timerSetting').textContent = `${gameSettings.timer} second timer`;
+      document.getElementById('timeLeft').textContent = `${gameSettings.timer}s left`;
+
+      // Reset timer animation
+      const timerBar = document.getElementById('timerBar');
+      timerBar.style.width = '100%';
+      void timerBar.offsetWidth; // Force reflow to restart animation
+      timerBar.style.animationDuration = `${gameSettings.timer}s`;
+
+      // Start the timer
+      questionEndTime = Date.now() + gameSettings.timer * 1000;
+      startQuestionTimer();
+    }
+
+    // Start the question timer
+    function startQuestionTimer() {
+      // Update timer display every second
+      const updateTimer = () => {
+        const now = Date.now();
+        const timeLeft = Math.max(0, Math.round((questionEndTime - now) / 1000));
+
+        document.getElementById('timeLeft').textContent = `${timeLeft}s left`;
+
+        // Show skip button for host when at least one player has answered
+        const anyPlayerAnswered = document.querySelectorAll('#playerProgressContainer .player-card.answered').length > 0;
+        document.getElementById('skipTimerBtn').style.display = anyPlayerAnswered ? 'inline-block' : 'none';
+
+        if (timeLeft > 0) {
+          questionTimer = setTimeout(updateTimer, 1000);
+        } else {
+          handleQuestionTimeout();
+        }
+      };
+
+      updateTimer();
+
+      // Set the main timer that will trigger when question time is up
+      questionTimer = setTimeout(handleQuestionTimeout, gameSettings.timer * 1000);
+    }
+
+    // Handle question timeout
+    async function handleQuestionTimeout() {
+      // Clear the timer
+      if (questionTimer) {
+        clearTimeout(questionTimer);
+        questionTimer = null;
+      }
+
+      // Disable skip button
+      document.getElementById('skipTimerBtn').style.display = 'none';
+
+      try {
+        // Mark question as completed in Firebase
+        await fetch(`${currentGameRef}/question_completed/${currentQuestionIndex}.json?auth=${authToken}`, {
+          method: 'PUT',
+          body: JSON.stringify(true)
+        });
+
+        // If this is the last question, show results
+        if (currentQuestionIndex >= triviaQuestions.length - 1) {
+          showGameResults();
+        } else {
+          // Enable next button
+          document.getElementById('nextQuestionBtn').disabled = false;
+          document.getElementById('nextQuestionBtn').classList.remove('bg-medium-blue');
+          document.getElementById('nextQuestionBtn').classList.add('bg-green');
+        }
+      } catch (error) {
+        console.error("Error handling question timeout:", error);
+      }
+    }
+
+    // Skip the current question timer
+    function skipCurrentQuestionTimer() {
+      if (questionTimer) {
+        clearTimeout(questionTimer);
+        handleQuestionTimeout();
+      }
+    }
+
+    // Update player progress during a question
+    function updatePlayerProgress(answeredPlayers) {
+      const container = document.getElementById('playerProgressContainer');
+      const answeredCounter = document.getElementById('playersAnsweredCounter');
+
+      // Clear container
+      container.innerHTML = '';
+
+      // Update counter
+      answeredCounter.textContent = `${answeredPlayers.length}/${players.length} answered`;
+
+      // Add player cards
+      players.forEach(player => {
+        const playerResult = answeredPlayers.find(p => p.player_id === player.id);
+        const hasAnswered = !!playerResult;
+        const isCorrect = playerResult ? playerResult.is_correct : false;
+
+        const playerCard = document.createElement('div');
+        playerCard.className = `player-card p-3 rounded-lg bg-medium-blue border ${hasAnswered ? (isCorrect ? 'correct border-green' : 'incorrect border-red') : 'border-light-blue'} ${hasAnswered ? 'answered' : ''}`;
+
+        // Create initial for player icon
+        const initial = (player.name || 'P').charAt(0).toUpperCase();
+
+        playerCard.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-dark-blue text-cream flex items-center justify-center font-bold">
+              ${initial}
+            </div>
+            <div class="flex-grow min-w-0">
+              <p class="font-semibold text-cream truncate">${player.name || 'Player'}</p>
+              <p class="text-light-blue text-xs">${hasAnswered ? (isCorrect ? 'Correct!' : 'Incorrect') : 'Thinking...'}</p>
+            </div>
+            ${hasAnswered ? `
+              <div class="w-6 h-6 flex items-center justify-center rounded-full ${isCorrect ? 'bg-green' : 'bg-red'} text-white">
+                ${isCorrect ? '✓' : '✗'}
+              </div>
+            ` : ''}
+          </div>
+        `;
+
+        container.appendChild(playerCard);
+      });
+    }
+
+    // Start monitoring game status
+    function startGameStatusMonitoring() {
+      // Monitor for player answers
+      gameStatusRef = setInterval(async () => {
+        try {
+          // Get current question results
+          const resultsResponse = await fetch(`${currentGameRef}/question_results/${currentQuestionIndex}.json`);
+
+          if (resultsResponse.ok) {
+            const data = await resultsResponse.json();
+
+            if (data && data.answers) {
+              const answers = data.answers;
+
+              // Convert to array of player answers
+              const answeredPlayers = Object.keys(answers).map(playerId => ({
+                player_id: playerId,
+                answer: answers[playerId].answer,
+                is_correct: answers[playerId].is_correct,
+                time_taken: answers[playerId].time_taken
+              }));
+
+              // Update player progress UI
+              updatePlayerProgress(answeredPlayers);
+
+              // If all players have answered, enable the next button
+              if (answeredPlayers.length === players.length) {
+                document.getElementById('nextQuestionBtn').disabled = false;
+                document.getElementById('nextQuestionBtn').classList.remove('bg-medium-blue');
+                document.getElementById('nextQuestionBtn').classList.add('bg-green');
+
+                // Clear the timer if it's still running
+                if (questionTimer) {
+                  clearTimeout(questionTimer);
+                  questionTimer = null;
+                }
+
+                // Mark question as completed in Firebase
+                await fetch(`${currentGameRef}/question_completed/${currentQuestionIndex}.json?auth=${authToken}`, {
+                  method: 'PUT',
+                  body: JSON.stringify(true)
+                });
+              }
+            }
+          }
+
+          // Check for game status changes (e.g., if a player leaves)
+          const gameResponse = await fetch(`${currentGameRef}.json`);
+
+          if (gameResponse.ok) {
+            const gameData = await gameResponse.json();
+
+            if (gameData) {
+              // Update player list if changed
+              if (gameData.players) {
+                const updatedPlayers = Object.keys(gameData.players).map(key => ({
+                  id: key,
+                  ...gameData.players[key]
+                }));
+
+                // Check if player count changed
+                if (updatedPlayers.length !== players.length) {
+                  players = updatedPlayers;
+                  updatePlayerProgress([]);
+                }
+              }
+
+              // If game was ended by another means (e.g., admin action), redirect
+              if (gameData.status === 'completed' && gameInProgress) {
+                clearInterval(gameStatusRef);
+                showGameResults();
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Error monitoring game status:", error);
+        }
+      }, 2000); // Check every 2 seconds
+    }
+
+    // Navigate to previous question
+    function navigateToPreviousQuestion() {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        showQuestion(currentQuestionIndex);
+      }
+    }
+
+    // Navigate to next question
+    function navigateToNextQuestion() {
+      if (currentQuestionIndex < triviaQuestions.length - 1) {
+        currentQuestionIndex++;
+        showQuestion(currentQuestionIndex);
+      } else {
+        // This is the last question, end the game
+        endGame();
+      }
+    }
+
+    // End the game
+    async function endGame() {
+      try {
+        // Update game status in Firebase
+        await fetch(`${currentGameRef}/status.json?auth=${authToken}`, {
+          method: 'PUT',
+          body: JSON.stringify('completed')
+        });
+
+        // Record completion time
+        await fetch(`${currentGameRef}/completed_at.json?auth=${authToken}`, {
+          method: 'PUT',
+          body: JSON.stringify(Date.now())
+        });
+
+        // Show game results
+        showGameResults();
+      } catch (error) {
+        console.error("Error ending game:", error);
+        showError('Failed to end the game properly.');
+      }
+    }
+
+    // Confirm end game (early)
+    function confirmEndGame() {
+      if (confirm('Are you sure you want to end the game now? This will end the current session and show the results.')) {
+        endGame();
+      }
+    }
+
+    // Show game results
+    async function showGameResults() {
+      try {
+        // Clear any timers or intervals
+        if (questionTimer) {
+          clearTimeout(questionTimer);
+          questionTimer = null;
+        }
+
+        if (gameStatusRef) {
+          clearInterval(gameStatusRef);
+          gameStatusRef = null;
+        }
+
+        if (gamePlayersRef) {
+          clearInterval(gamePlayersRef);
+          gamePlayersRef = null;
+        }
+
+        // Calculate scores and generate leaderboard
+        const resultsResponse = await fetch(`${currentGameRef}/question_results.json`);
+
+        if (resultsResponse.ok) {
+          const resultsData = await resultsResponse.json();
+
+          if (resultsData) {
+            // Calculate scores for each player
+            const playerScores = {};
+            let questionIdx = 0;
+
+            for (const questionKey in resultsData) {
+              if (resultsData[questionKey] && resultsData[questionKey].answers) {
+                const questionAnswers = resultsData[questionKey].answers;
+
+                for (const playerId in questionAnswers) {
+                  const answer = questionAnswers[playerId];
+
+                  if (!playerScores[playerId]) {
+                    playerScores[playerId] = {
+                      player_id: playerId,
+                      player_name: players.find(p => p.id === playerId)?.name || 'Player',
+                      score: 0,
+                      correct_answers: 0,
+                      total_time: 0
+                    };
+                  }
+
+                  if (answer.is_correct) {
+                    // Score formula: base points + time bonus
+                    const basePoints = 1000;
+                    const timeBonus = Math.max(0, Math.floor((gameSettings.timer - answer.time_taken / 1000) * 10));
+                    const questionScore = basePoints + timeBonus;
+
+                    playerScores[playerId].score += questionScore;
+                    playerScores[playerId].correct_answers++;
+                  }
+
+                  playerScores[playerId].total_time += answer.time_taken;
+                }
+              }
+              questionIdx++;
+            }
+
+            // Convert to array and sort by score
+            const leaderboard = Object.values(playerScores).sort((a, b) => {
+              // Sort by score (descending)
+              if (b.score !== a.score) return b.score - a.score;
+              // Tiebreaker 1: Correct answers (descending)
+              if (b.correct_answers !== a.correct_answers) return b.correct_answers - a.correct_answers;
+              // Tiebreaker 2: Time taken (ascending)
+              return a.total_time - b.total_time;
+            });
+
+            // Update ranks
+            leaderboard.forEach((entry, index) => {
+              entry.rank = index + 1;
+            });
+
+            // Save final leaderboard to Firebase
+            await fetch(`${currentGameRef}/leaderboard.json?auth=${authToken}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(leaderboard)
+            });
+
+            // Render the leaderboard in the results screen
+            renderFinalLeaderboard(leaderboard);
+          }
+        }
+
+        // Hide other screens
+        document.getElementById('gameSetupContent').style.display = 'none';
+        document.getElementById('gameHostInterface').style.display = 'none';
+
+        // Show results screen
+        document.getElementById('gameResultsScreen').style.display = 'block';
+
+        gameInProgress = false;
+      } catch (error) {
+        console.error("Error showing game results:", error);
+        showError('Failed to display game results.');
+      }
+    }
+
+    // Render final leaderboard
+    function renderFinalLeaderboard(leaderboard) {
+      const leaderboardBody = document.getElementById('leaderboardBody');
+      leaderboardBody.innerHTML = '';
+
+      leaderboard.forEach((entry, index) => {
+        const row = document.createElement('tr');
+
+        // Set background color based on position
+        let bgColor = 'var(--dark-blue)';
+
+        if (index === 0) {
+          bgColor = 'rgba(255, 215, 0, 0.15)'; // Gold
+        } else if (index === 1) {
+          bgColor = 'rgba(192, 192, 192, 0.15)'; // Silver
+        } else if (index === 2) {
+          bgColor = 'rgba(205, 127, 50, 0.15)'; // Bronze
+        } else if (index % 2 === 0) {
+          bgColor = 'rgba(29, 45, 68, 0.5)';
+        }
+
+        row.style.backgroundColor = bgColor;
+        row.style.borderBottom = '1px solid var(--medium-blue)';
+
+        row.innerHTML = `
+          <td class="px-4 py-3">
+            <div class="flex items-center justify-center w-8 h-8 rounded-full font-bold ${index < 3 ? 'bg-yellow text-dark-blue' : 'bg-light-blue text-dark-blue'}">
+              ${index + 1}
+            </div>
+          </td>
+          <td class="px-4 py-3 text-cream">${entry.player_name}</td>
+          <td class="px-4 py-3 text-right text-cream">${entry.score.toLocaleString()}</td>
+          <td class="px-4 py-3 text-right text-cream">${entry.correct_answers}/${triviaQuestions.length}</td>
+        `;
+
+        leaderboardBody.appendChild(row);
+      });
+    }
+
+    // Reset game and host again
+    function resetGameAndHostAgain() {
+      // Clear game state
+      gameCode = null;
+      currentGameRef = null;
+      players = [];
+      invitedFriends = [];
+      currentQuestionIndex = 0;
+      gameInProgress = false;
+
+      // Reset UI
+      document.getElementById('gameResultsScreen').style.display = 'none';
+      document.getElementById('waitingRoom').style.display = 'none';
+      document.getElementById('gameCodeContainer').style.display = 'none';
+      document.getElementById('startHostingControls').style.display = 'block';
+
+      // Show setup screen
+      document.getElementById('gameSetupContent').style.display = 'block';
+    }
+
+    // Handle sign out
+    function handleSignOut() {
+      // End game if in progress
+      if (gameInProgress) {
+        endGame();
+      }
+
+      // Clear any timers or intervals
+      if (questionTimer) {
+        clearTimeout(questionTimer);
+      }
+
+      if (gameStatusRef) {
+        clearInterval(gameStatusRef);
+      }
+
+      if (gamePlayersRef) {
+        clearInterval(gamePlayersRef);
+      }
+
+      // Clear authentication data
+      localStorage.removeItem('triviaUser');
+      localStorage.removeItem('triviaToken');
+
+      user = null;
+      userData = null;
+      authToken = null;
+
+      // Show success message
+      showSuccess('Signed out successfully!');
+
+      // Redirect to home after short delay
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1000);
+    }
+
+    // Utility function to shuffle an array
+    function shuffleArray(array) {
+      const newArray = [...array];
+      for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+      }
+      return newArray;
+    }
+
+    // Show error message
+    function showError(message) {
+      const errorMsg = document.getElementById('errorMessage');
+      errorMsg.textContent = message;
+      errorMsg.style.display = 'block';
+
+      setTimeout(() => {
+        errorMsg.style.display = 'none';
+      }, 5000);
+    }
+
+    // Show success message
+    function showSuccess(message) {
+      const successMsg = document.getElementById('successMessage');
+      successMsg.textContent = message;
+      successMsg.style.display = 'block';
+
+      setTimeout(() => {
+        successMsg.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
