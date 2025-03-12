@@ -249,16 +249,9 @@
 
           <!-- These links will only be shown when logged in -->
           <div id="loggedInNav" class="flex items-center gap-3" style="display: none;">
-            <button
-              id="navCreateTrivia"
-              class="nav-link">
-              Create Trivia
-            </button>
-            <button
-              id="navMyTrivias"
-              class="nav-link">
-              My Trivias
-            </button>
+            <a href="browse.html" class="nav-link">
+              Browse Trivias
+            </a>
           </div>
         </div>
 
@@ -711,9 +704,9 @@
         }
       });
 
-      // Add event listeners for navigation
+      /* Add event listeners for navigation
       document.getElementById('navCreateTrivia').addEventListener('click', showCreateTriviaContent);
-      document.getElementById('navMyTrivias').addEventListener('click', showMyTriviasContent);
+      document.getElementById('navMyTrivias').addEventListener('click', showMyTriviasContent);*/
 
       // Setup account dropdown
       setupAccountDropdown();
