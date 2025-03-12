@@ -472,6 +472,23 @@
           <p id="questionCountInfo" class="text-sm text-light-blue"></p>
         </div>
 
+        <div class="mb-6 p-4 rounded-lg bg-dark-blue">
+          <div class="flex flex-wrap gap-4 justify-center">
+            <button id="hostModeBtn" class="nav-button bg-medium-blue text-cream" onclick="switchMode('host')">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Host a Game
+            </button>
+            <button id="joinModeBtn" class="nav-button bg-dark-blue text-cream border border-light-blue" onclick="switchMode('join')">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              Join a Game
+            </button>
+          </div>
+        </div>
+
         <!-- Game Settings -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
@@ -491,6 +508,58 @@
                   class="w-full"
                 />
                 <span id="timerValue" class="text-cream min-w-[40px] text-center">30</span>
+              </div>
+            </div>
+
+            <!-- Join Game Content -->
+            <div id="gameJoinContent" class="mb-8" style="display: none;">
+              <div class="rounded-lg p-6 bg-dark-blue mb-6">
+                <h2 class="text-2xl mb-4 text-cream">Join a Trivia Game</h2>
+
+                <form id="joinGameForm" class="mb-6">
+                  <div class="mb-4">
+                    <label class="block mb-2 text-light-blue">Enter Game Code</label>
+                    <div class="flex">
+                      <input
+                        type="text"
+                        id="gameCodeInput"
+                        placeholder="Enter 6-digit code (e.g., ABC123)"
+                        class="w-full p-3 rounded-l-lg border border-light-blue bg-dark-bg text-cream form-input"
+                        required
+                        pattern="[A-Za-z0-9]{6}"
+                      />
+                      <button
+                        type="submit"
+                        class="nav-button bg-green text-white rounded-l-none"
+                      >
+                        Join
+                      </button>
+                    </div>
+                    <p class="text-sm text-light-blue mt-1">Enter the 6-character code provided by the game host</p>
+                  </div>
+                </form>
+
+                <!-- Game invitations -->
+                <div id="gameInvitationsContainer">
+                  <h3 class="text-xl mb-3 text-light-blue">Game Invitations</h3>
+                  <div id="loadingInvitations" class="text-center py-4">
+                    <p class="text-light-blue">Loading your invitations...</p>
+                  </div>
+                  <div id="noInvitationsMessage" class="text-center py-4" style="display: none;">
+                    <p class="text-light-blue">You don't have any pending game invitations.</p>
+                  </div>
+                  <div id="invitationsList" class="space-y-3" style="display: none;">
+                    <!-- Invitations will be added here dynamically -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recently Joined Games (Optional) -->
+              <div class="rounded-lg p-6 bg-dark-blue">
+                <h3 class="text-xl mb-3 text-light-blue">Recently Joined Games</h3>
+                <div id="recentGamesContainer">
+                  <p class="text-cream">You haven't joined any games recently.</p>
+                </div>
               </div>
             </div>
 
@@ -628,6 +697,31 @@
       </div>
     </div>
 
+    <!-- Player Join UI (when player has joined a game and is waiting) -->
+    <div id="playerWaitingContent" class="mb-8" style="display: none;">
+      <div class="rounded-lg p-6 bg-dark-blue">
+        <div class="text-center">
+          <h2 class="text-2xl mb-2 text-cream">Waiting for Host to Start</h2>
+          <p class="text-light-blue mb-6" id="waitingRoomInfo">You've joined <span id="joinedGameTitle" class="font-bold text-cream">the game</span>. Waiting for the host to start...</p>
+
+          <div class="animate-pulse mb-6">
+            <div class="w-16 h-16 mx-auto border-4 border-t-light-blue border-r-light-blue border-b-light-blue border-l-transparent rounded-full animate-spin"></div>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="text-xl mb-3 text-light-blue">Players in Waiting Room</h3>
+            <div id="playerWaitingRoom" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              <!-- Other players will be added here -->
+            </div>
+          </div>
+
+          <button id="leaveGameBtn" class="nav-button bg-red text-white">
+            Leave Game
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Game Host Interface - In Game -->
     <div id="gameHostInterface" class="mb-8" style="display: none;">
       <div class="rounded-lg p-6 bg-dark-blue">
@@ -760,6 +854,10 @@
     let players = [];
     let invitedFriends = [];
     let currentQuestionIndex = 0;
+    let currentGameMode = 'host'; // 'host' or 'join'
+    let joinedGameId = null;
+    let joinedGameData = null;
+    let joinedGamePlayersRef = null;
     let gameInProgress = false;
     let questionTimer = null;
     let questionEndTime = null;
@@ -775,7 +873,7 @@
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', () => {
-      // Check authentication state
+  // Check authentication state
       checkAuthState().then(isLoggedIn => {
         if (isLoggedIn) {
           // Check if user has premium access
@@ -787,7 +885,16 @@
               document.getElementById('premiumRequiredMessage').style.display = 'none';
 
               // Load trivias
-              loadTrivias();
+              loadTrivias().then(() => {
+                // Check for autohost parameter
+                const autoHost = getUrlParameter('autohost');
+                const triviaId = getUrlParameter('trivia');
+
+                if (autoHost === 'true' && triviaId) {
+                  // Select the specified trivia
+                  autoSelectTrivia(triviaId);
+                }
+              });
 
               // Setup event listeners
               setupEventListeners();
@@ -915,6 +1022,40 @@
         return false;
       }
     }
+
+    async function autoSelectTrivia(triviaId) {
+  // Find the trivia in the loaded trivias
+      selectedTrivia = allTrivias.find(t => t.id === triviaId);
+
+      if (selectedTrivia) {
+        // Update the select element
+        const selectElement = document.getElementById('triviaSelect');
+        selectElement.value = triviaId;
+
+        // Update question count info
+        updateQuestionCountInfo(selectedTrivia);
+
+        // Generate game code automatically
+        setTimeout(() => {
+          generateGameCode();
+
+          // Show a success message
+          showSuccess('Game room created! Share the code with players to join.');
+
+          // Scroll to the game code section
+          document.getElementById('gameCodeContainer').scrollIntoView({ behavior: 'smooth' });
+        }, 1000);
+      } else {
+        showError('Selected trivia not found. Please choose another trivia.');
+      }
+    }
+
+    function getUrlParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+
 
     // Setup Account Dropdown
     function setupAccountDropdown() {
@@ -1090,56 +1231,480 @@
 
       // Trivia selection change
       document.getElementById('triviaSelect').addEventListener('change', handleTriviaChange);
+
+      // Join game form
+      document.getElementById('joinGameForm').addEventListener('submit', handleJoinGame);
+
+      // Leave game button
+      document.getElementById('leaveGameBtn').addEventListener('click', () => {
+        if (confirm('Are you sure you want to leave this game?')) {
+          leaveGame();
+        }
+      });
+      // Check URL parameters for direct join
+      const joinGameCode = getUrlParameter('join');
+      if (joinGameCode) {
+        switchMode('join');
+        document.getElementById('gameCodeInput').value = joinGameCode;
+        // Attempt to join with a slight delay to ensure everything is loaded
+        setTimeout(() => {
+          joinGame(joinGameCode).catch(error => {
+            console.error("Error joining from URL:", error);
+          });
+        }, 1000);
+      }
     }
 
     // Load all trivias
     async function loadTrivias() {
       try {
+        // Show loading state
+        const loadingElement = document.getElementById('loadingTrivias');
+        const selectElement = document.getElementById('triviaSelect');
+
+        loadingElement.style.display = 'block';
+        selectElement.style.display = 'none';
+
+        // Make the request to Firebase
         const response = await fetch(`${FIREBASE_DATABASE_URL}/trivias.json`);
+
+        if (!response.ok) {
+          throw new Error(`Server responded with status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Hide loading state
+        loadingElement.style.display = 'none';
+
+        if (!data) {
+          showError('No trivias found. Please create some trivias first.');
+          return;
+        }
+
+        // Convert to array and filter trivias with questions
+        allTrivias = Object.entries(data)
+          .map(([key, value]) => ({
+            id: key,
+            ...value
+          }))
+          .filter(trivia => trivia.question_count > 0);
+
+        if (allTrivias.length === 0) {
+          showError('No trivias with questions found. Please create a trivia with questions first.');
+          return;
+        }
+
+        // Sort by name
+        allTrivias.sort((a, b) => a.title.localeCompare(b.title));
+
+        // Populate dropdown
+        selectElement.innerHTML = '';
+        allTrivias.forEach(trivia => {
+          const option = document.createElement('option');
+          option.value = trivia.id;
+          option.textContent = `${trivia.title} (${trivia.question_count || 0} questions)`;
+          selectElement.appendChild(option);
+        });
+
+        // Show select element and select first trivia
+        selectElement.style.display = 'block';
+        selectedTrivia = allTrivias[0];
+        selectElement.value = selectedTrivia.id;
+        updateQuestionCountInfo(selectedTrivia);
+
+        return allTrivias;
+      } catch (error) {
+        console.error('Error loading trivias:', error);
+        showError('Failed to load trivias. Please try again.');
+      }
+    }
+
+    // Switch between host mode and join mode
+    function switchMode(mode) {
+      currentGameMode = mode;
+
+      // Update button styles
+      if (mode === 'host') {
+        document.getElementById('hostModeBtn').className = 'nav-button bg-medium-blue text-cream';
+        document.getElementById('joinModeBtn').className = 'nav-button bg-dark-blue text-cream border border-light-blue';
+
+        // Show host content, hide join content
+        document.getElementById('gameSetupContent').style.display = 'block';
+        document.getElementById('gameJoinContent').style.display = 'none';
+        document.getElementById('playerWaitingContent').style.display = 'none';
+      } else {
+        document.getElementById('hostModeBtn').className = 'nav-button bg-dark-blue text-cream border border-light-blue';
+        document.getElementById('joinModeBtn').className = 'nav-button bg-medium-blue text-cream';
+
+        // Show join content, hide host content
+        document.getElementById('gameSetupContent').style.display = 'none';
+        document.getElementById('gameJoinContent').style.display = 'block';
+        document.getElementById('playerWaitingContent').style.display = 'none';
+
+        // Load game invitations
+        loadGameInvitations();
+      }
+    }
+
+    // Load game invitations for the current user
+    async function loadGameInvitations() {
+      if (!user || !authToken) return;
+
+      const loadingInvitations = document.getElementById('loadingInvitations');
+      const noInvitationsMessage = document.getElementById('noInvitationsMessage');
+      const invitationsList = document.getElementById('invitationsList');
+
+      loadingInvitations.style.display = 'block';
+      noInvitationsMessage.style.display = 'none';
+      invitationsList.style.display = 'none';
+      invitationsList.innerHTML = '';
+
+      try {
+        const response = await fetch(`${FIREBASE_DATABASE_URL}/game_invitations/${user.localId}.json?auth=${authToken}`);
+
         if (response.ok) {
           const data = await response.json();
 
-          document.getElementById('loadingTrivias').style.display = 'none';
+          loadingInvitations.style.display = 'none';
 
           if (data) {
-            // Convert to array and filter trivias with questions
-            allTrivias = Object.keys(data)
+            // Convert to array and filter out expired invitations (older than 24 hours)
+            const cutoffTime = Date.now() - (24 * 60 * 60 * 1000);
+            const invitations = Object.keys(data)
+              .filter(key => data[key].sent_at > cutoffTime)
               .map(key => ({
-                id: key,
+                code: key,
                 ...data[key]
-              }))
-              .filter(trivia => trivia.question_count > 0);
+              }));
 
-            // Sort by name
-            allTrivias.sort((a, b) => a.title.localeCompare(b.title));
-
-            // Populate dropdown
-            const selectElement = document.getElementById('triviaSelect');
-            selectElement.innerHTML = '';
-
-            allTrivias.forEach(trivia => {
-              const option = document.createElement('option');
-              option.value = trivia.id;
-              option.textContent = `${trivia.title} (${trivia.question_count || 0} questions)`;
-              selectElement.appendChild(option);
-            });
-
-            if (allTrivias.length > 0) {
-              selectElement.style.display = 'block';
-              // Select first trivia by default
-              selectedTrivia = allTrivias[0];
-              updateQuestionCountInfo(selectedTrivia);
+            if (invitations.length > 0) {
+              renderInvitations(invitations);
+              invitationsList.style.display = 'block';
             } else {
-              showError('No trivias with questions found. Create a trivia with questions first.');
+              noInvitationsMessage.style.display = 'block';
             }
           } else {
-            showError('No trivias found. Create a trivia with questions first.');
+            noInvitationsMessage.style.display = 'block';
           }
+        } else {
+          throw new Error('Failed to fetch invitations');
         }
       } catch (error) {
-        console.error("Error loading trivias:", error);
-        showError('Failed to load trivias. Please try again.');
+        console.error("Error loading invitations:", error);
+        loadingInvitations.style.display = 'none';
+        noInvitationsMessage.textContent = 'Error loading invitations. Please try again.';
+        noInvitationsMessage.style.display = 'block';
       }
+    }
+
+    // Render invitations list
+    function renderInvitations(invitations) {
+      const container = document.getElementById('invitationsList');
+      container.innerHTML = '';
+
+      invitations.forEach(invitation => {
+        const timeAgo = formatTimeAgo(invitation.sent_at);
+
+        const invitationCard = document.createElement('div');
+        invitationCard.className = 'bg-medium-blue rounded-lg p-4';
+        invitationCard.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <h4 class="text-cream font-bold">${invitation.trivia_title}</h4>
+              <p class="text-sm text-light-blue">
+                Invited by ${invitation.host_name} · ${timeAgo}
+              </p>
+            </div>
+            <div class="flex gap-2">
+              <button class="nav-button py-1 px-2 h-auto bg-green text-white text-sm accept-invitation-btn" data-code="${invitation.code}">
+                Accept
+              </button>
+              <button class="nav-button py-1 px-2 h-auto bg-red text-white text-sm decline-invitation-btn" data-code="${invitation.code}">
+                Decline
+              </button>
+            </div>
+          </div>
+        `;
+
+        container.appendChild(invitationCard);
+      });
+
+      // Add event listeners to buttons
+      container.querySelectorAll('.accept-invitation-btn').forEach(btn => {
+        btn.addEventListener('click', () => acceptInvitation(btn.getAttribute('data-code')));
+      });
+
+      container.querySelectorAll('.decline-invitation-btn').forEach(btn => {
+        btn.addEventListener('click', () => declineInvitation(btn.getAttribute('data-code')));
+      });
+    }
+
+    // Accept a game invitation
+    async function acceptInvitation(gameCode) {
+      try {
+        // Check if the game still exists and is in waiting state
+        const gameResponse = await fetch(`${FIREBASE_DATABASE_URL}/games/${gameCode}.json`);
+
+        if (gameResponse.ok) {
+          const gameData = await gameResponse.json();
+
+          if (!gameData) {
+            showError('This game no longer exists.');
+            loadGameInvitations(); // Refresh invitations list
+            return;
+          }
+
+          if (gameData.status !== 'waiting') {
+            showError('This game has already started or ended.');
+            loadGameInvitations(); // Refresh invitations list
+            return;
+          }
+
+          // Join the game
+          await joinGame(gameCode);
+
+          // Remove the invitation
+          await fetch(`${FIREBASE_DATABASE_URL}/game_invitations/${user.localId}/${gameCode}.json?auth=${authToken}`, {
+            method: 'DELETE'
+          });
+
+          showSuccess('Successfully joined the game!');
+        } else {
+          throw new Error('Failed to check game status');
+        }
+      } catch (error) {
+        console.error("Error accepting invitation:", error);
+        showError('Failed to join game. Please try again.');
+      }
+    }
+
+    // Decline a game invitation
+    async function declineInvitation(gameCode) {
+      try {
+        // Delete the invitation
+        await fetch(`${FIREBASE_DATABASE_URL}/game_invitations/${user.localId}/${gameCode}.json?auth=${authToken}`, {
+          method: 'DELETE'
+        });
+
+        // Refresh invitations list
+        loadGameInvitations();
+
+        showSuccess('Invitation declined.');
+      } catch (error) {
+        console.error("Error declining invitation:", error);
+        showError('Failed to decline invitation. Please try again.');
+      }
+    }
+
+    // Handle join game form submission
+    async function handleJoinGame(e) {
+      e.preventDefault();
+
+      const gameCode = document.getElementById('gameCodeInput').value.toUpperCase();
+
+      if (!gameCode || gameCode.length !== 6) {
+        showError('Please enter a valid 6-character game code.');
+        return;
+      }
+
+      try {
+        await joinGame(gameCode);
+      } catch (error) {
+        console.error("Error joining game:", error);
+        showError('Failed to join game. Please try again.');
+      }
+    }
+
+    // Join a game with the given code
+    async function joinGame(gameCode) {
+      if (!user) {
+        showError('You must be signed in to join a game.');
+        return;
+      }
+
+      try {
+        // Check if the game exists and is joinable
+        const gameResponse = await fetch(`${FIREBASE_DATABASE_URL}/games/${gameCode}.json`);
+
+        if (!gameResponse.ok) {
+          throw new Error('Failed to fetch game data');
+        }
+
+        const gameData = await gameResponse.json();
+
+        if (!gameData) {
+          showError('Game not found. Please check the code and try again.');
+          return;
+        }
+
+        if (gameData.status !== 'waiting') {
+          if (gameData.status === 'in_progress' && gameData.settings?.allow_late_join) {
+            // Late join allowed
+            showSuccess('Joining game in progress...');
+          } else {
+            showError('This game is no longer accepting players.');
+            return;
+          }
+        }
+
+        // Add player to the game
+        const playerData = {
+          id: user.localId,
+          name: user.displayName || userData?.username || 'Player',
+          joined_at: Date.now()
+        };
+
+        await fetch(`${FIREBASE_DATABASE_URL}/games/${gameCode}/players/${user.localId}.json?auth=${authToken}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(playerData)
+        });
+
+        // Save joined game data
+        joinedGameId = gameCode;
+        joinedGameData = gameData;
+
+        // Show player waiting UI
+        document.getElementById('gameJoinContent').style.display = 'none';
+        document.getElementById('gameSetupContent').style.display = 'none';
+        document.getElementById('playerWaitingContent').style.display = 'block';
+
+        // Update waiting room info
+        document.getElementById('joinedGameTitle').textContent = gameData.trivia_title;
+
+        // Start listening for game updates
+        startListeningForGameUpdates(gameCode);
+
+        // Show success message
+        showSuccess('Successfully joined the game!');
+      } catch (error) {
+        console.error("Error joining game:", error);
+        throw error;
+      }
+    }
+
+    // Start listening for game updates
+    function startListeningForGameUpdates(gameCode) {
+      // Clear any existing interval
+      if (joinedGamePlayersRef) {
+        clearInterval(joinedGamePlayersRef);
+      }
+
+      // Set up interval to fetch updates
+      joinedGamePlayersRef = setInterval(async () => {
+        try {
+          // Check game status
+          const gameResponse = await fetch(`${FIREBASE_DATABASE_URL}/games/${gameCode}.json`);
+
+          if (gameResponse.ok) {
+            const gameData = await gameResponse.json();
+
+            if (!gameData) {
+              // Game was deleted
+              clearInterval(joinedGamePlayersRef);
+              joinedGamePlayersRef = null;
+              showError('The game has been ended by the host.');
+              switchMode('join');
+              return;
+            }
+
+            // Update game data
+            joinedGameData = gameData;
+
+            // Check if game started
+            if (gameData.status === 'in_progress') {
+              // Game started - redirect to game play page (would be in a real app)
+              showSuccess('Game has started!');
+              // In a real application, you would redirect to a game play page here
+            }
+
+            // Update players list
+            if (gameData.players) {
+              updateWaitingRoomPlayers(gameData.players);
+            }
+          } else {
+            throw new Error('Failed to fetch game updates');
+          }
+        } catch (error) {
+          console.error("Error getting game updates:", error);
+        }
+      }, 3000); // Check every 3 seconds
+    }
+
+    // Update waiting room players list
+    function updateWaitingRoomPlayers(players) {
+      const container = document.getElementById('playerWaitingRoom');
+      container.innerHTML = '';
+
+      const playersArray = Object.values(players);
+
+      playersArray.forEach(player => {
+        const playerCard = document.createElement('div');
+        playerCard.className = 'p-2 rounded-lg bg-medium-blue border border-light-blue';
+
+        // Create initial for player avatar
+        const initial = (player.name || 'P').charAt(0).toUpperCase();
+
+        playerCard.innerHTML = `
+          <div class="flex items-center">
+            <div class="w-8 h-8 rounded-full bg-dark-blue text-cream flex items-center justify-center font-bold">
+              ${initial}
+            </div>
+            <p class="ml-2 text-cream truncate">${player.name}</p>
+          </div>
+        `;
+
+        container.appendChild(playerCard);
+      });
+    }
+
+    // Leave the current game
+    async function leaveGame() {
+      if (!joinedGameId || !user || !authToken) return;
+
+      try {
+        // Remove player from the game
+        await fetch(`${FIREBASE_DATABASE_URL}/games/${joinedGameId}/players/${user.localId}.json?auth=${authToken}`, {
+          method: 'DELETE'
+        });
+
+        // Clear joined game data
+        joinedGameId = null;
+        joinedGameData = null;
+
+        // Clear interval
+        if (joinedGamePlayersRef) {
+          clearInterval(joinedGamePlayersRef);
+          joinedGamePlayersRef = null;
+        }
+
+        // Show join content
+        switchMode('join');
+
+        showSuccess('You have left the game.');
+      } catch (error) {
+        console.error("Error leaving game:", error);
+        showError('Failed to leave the game. Please try again.');
+      }
+    }
+
+    function retryLoadTrivias() {
+      // Clear any existing error messages
+      const errorMsg = document.getElementById('errorMessage');
+      if (errorMsg) {
+        errorMsg.style.display = 'none';
+      }
+
+      // Show loading message
+      showSuccess('Retrying to load trivias...');
+
+      // Add a small delay before retrying
+      setTimeout(() => {
+        loadTrivias();
+      }, 500);
     }
 
     // Update question count info for selected trivia
@@ -2135,12 +2700,23 @@
     // Show error message
     function showError(message) {
       const errorMsg = document.getElementById('errorMessage');
-      errorMsg.textContent = message;
+      errorMsg.innerHTML = `
+        ${message}
+        <button
+          class="ml-2 px-2 py-1 bg-white text-red rounded-lg text-sm hover:bg-gray-100"
+          onclick="retryLoadTrivias()"
+        >
+          Retry
+        </button>
+      `;
       errorMsg.style.display = 'block';
 
+      // Auto-hide after 10 seconds if not dismissed
       setTimeout(() => {
-        errorMsg.style.display = 'none';
-      }, 5000);
+        if (errorMsg.style.display !== 'none') {
+          errorMsg.style.display = 'none';
+        }
+      }, 10000);
     }
 
     // Show success message
